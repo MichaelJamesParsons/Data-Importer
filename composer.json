@@ -1,0 +1,24 @@
+{
+  "name": "michaeljamesparsons/data-importer",
+  "description": "A robust import library that provides an interface to import data from any data source into any file type, database, or other data repository.",
+  "type": "Library",
+  "license": "MIT",
+  "keywords": ["import", "michaeljamesbondparsons"],
+  "authors": [
+    {
+      "name": "Michael-James Parsons",
+      "email": "michael@michaeljamesbondparsons.com"
+    }
+  ],
+  "minimum-stability": "stable",
+  "require": {},
+  "require-dev": {
+    "phpbench/phpbench": "@dev",
+    "phpunit/phpunit": "^5.4"
+  },
+  "autoload": {
+    "psr-4": {
+      "michaeljamesparsons\\data-importer\\": "src"
+    }
+  },
+}
