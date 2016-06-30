@@ -18,7 +18,7 @@
   },
   "autoload": {
     "psr-4": {
-      "michaeljamesparsons\\data-importer\\": "src"
+      "michaeljamesparsons\\DataImporter\\": "src"
     }
-  },
+  }
 }

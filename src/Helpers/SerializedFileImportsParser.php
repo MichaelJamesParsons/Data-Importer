@@ -39,7 +39,7 @@ class SerializedFileImportsParser
 
 		/** @var array $file */
 		foreach($files as $file) {
-			$import = new FileImport($file['file_id'], $file['file_name'], $file['entity']);
+			$import = new FileImport($file['fileId'], $file['fileName'], $file['entity']);
 
 			if(is_array($file['filters'])) {
 				self::addFilters($import, $file['filters']);

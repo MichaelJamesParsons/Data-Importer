@@ -10,14 +10,14 @@ class CsvReader extends AbstractFileReader
 	/**
 	 * CsvReader constructor.
 	 *
-	 * @param string $file_path - The absolute path to the file.
+	 * @param string $filePath - The absolute path to the file.
 	 * @param string $delimiter
 	 * @param string $enclosure
 	 * @param string $escape
 	 */
-	public function __construct($file_path, $delimiter = ',', $enclosure = '"', $escape = '\\')
+	public function __construct($filePath, $delimiter = ',', $enclosure = '"', $escape = '\\')
 	{
-		parent::__construct($file_path);
+		parent::__construct($filePath);
 		ini_set('auto_detect_line_endings', true);
 		
 		$this->stream->setFlags(

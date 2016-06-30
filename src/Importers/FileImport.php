@@ -11,10 +11,10 @@ use michaeljamesparsons\DataImporter\Filters\IFilterable;
 class FileImport extends AbstractImporter
 {
 	/** @var  int */
-	protected $file_id;
+	protected $fileId;
 
 	/** @var  string */
-	protected $file_name;
+	protected $fileName;
 
 	/** @var  string */
 	protected $entity;
@@ -28,17 +28,17 @@ class FileImport extends AbstractImporter
 	/**
 	 * FileImport constructor.
 	 *
-	 * @param       $file_id
-	 * @param       $file_name
+	 * @param       $fileId
+	 * @param       $fileName
 	 * @param       $entity
 	 * @param array $filters
 	 * @param array $converters
 	 */
-	public function __construct($file_id, $file_name, $entity, $filters = [], $converters = [])
+	public function __construct($fileId, $fileName, $entity, $filters = [], $converters = [])
 	{
 		parent::__construct();
-		$this->file_id    = $file_id;
-		$this->file_name  = $file_name;
+		$this->fileId     = $fileId;
+		$this->fileName   = $fileName;
 		$this->entity     = $entity;
 		$this->filters    = $filters;
 		$this->converters = $converters;
@@ -49,15 +49,15 @@ class FileImport extends AbstractImporter
 	 */
 	public function getFileId()
 	{
-		return $this->file_id;
+		return $this->fileId;
 	}
 
 	/**
-	 * @param int $file_id
+	 * @param int $fileId
 	 */
-	public function setFileId($file_id)
+	public function setFileId($fileId)
 	{
-		$this->file_id = $file_id;
+		$this->fileId = $fileId;
 	}
 
 	/**
@@ -65,15 +65,15 @@ class FileImport extends AbstractImporter
 	 */
 	public function getFileName()
 	{
-		return $this->file_name;
+		return $this->fileName;
 	}
 
 	/**
-	 * @param string $file_name
+	 * @param string $fileName
 	 */
-	public function setFileName($file_name)
+	public function setFileName($fileName)
 	{
-		$this->file_name = $file_name;
+		$this->fileName = $fileName;
 	}
 
 	/**
