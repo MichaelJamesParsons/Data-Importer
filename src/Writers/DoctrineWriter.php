@@ -13,6 +13,8 @@ use michaeljamesparsons\DataImporter\Helpers\RecordWrapper;
  * Class DoctrineWriter
  * @package sa\import\writers
  *
+ * @todo Implement an ORM context adapter with abstract methods that can be used to get entity/table information.
+ *
  * @todo Use entity manager to fetch entity info instead of using mappers.
  * @todo Move to another library.
  * @todo Move shared logic to parent abstract classes.
@@ -278,6 +280,7 @@ class DoctrineWriter extends AbstractOrmWriter
 	 * @param EntityMapper $mapper
 	 *
 	 * @return $this
+	 * @todo Consider moving to another class.
 	 */
 	public function addMapper(EntityMapper $mapper) {
 		$this->mappers[$mapper->getEntity()] = $mapper;
@@ -288,6 +291,7 @@ class DoctrineWriter extends AbstractOrmWriter
 	 * @param $entity
 	 *
 	 * @throws \Exception
+	 * @todo Abstract to parent class.
 	 */
 	public function setCurrentEntity($entity) {
 		if(!array_key_exists($entity, $this->mappers)) {

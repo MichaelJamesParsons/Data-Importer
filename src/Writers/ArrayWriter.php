@@ -10,9 +10,16 @@ namespace michaeljamesparsons\DataImporter\Writers;
  */
 class ArrayWriter extends AbstractWriter
 {
-	/** @var array array */
+	/**
+	 * The data collected from the reader.
+	 *
+	 * @var array
+	 */
 	protected $data;
 
+	/**
+	 * ArrayWriter constructor.
+	 */
 	public function __construct()
 	{
 		$this->data = [];

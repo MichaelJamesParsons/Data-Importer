@@ -8,28 +8,33 @@ namespace michaeljamesparsons\DataImporter\Readers;
 abstract class AbstractFileReader extends AbstractReader implements \SeekableIterator
 {
 	/** @var  string */
-	protected $file_path;
+	protected $filePath;
 
 	/** @var  \SplFileObject */
 	protected $stream;
 
-	public function __construct($file_path)
+	/**
+	 * AbstractFileReader constructor.
+	 *
+	 * @param $filePath - The absolute path to the file.
+	 */
+	public function __construct($filePath)
 	{
 		parent::__construct();
 
-		$this->file_path = $file_path;
-		$this->stream  = $this->loadFile($file_path);
+		$this->filePath = $filePath;
+		$this->stream   = $this->loadFile($filePath);
 	}
 
 	/**
 	 * Loads file into input stream as SplFileObject.
 	 *
-	 * @param string $file_path
+	 * @param string $filePath - The absolute path to the file.
 	 *
 	 * @return \SplFileObject
 	 */
-	protected function loadFile($file_path) {
-		return new \SplFileObject($file_path);
+	protected function loadFile($filePath) {
+		return new \SplFileObject($filePath);
 	}
 
 	/**
@@ -37,17 +42,17 @@ abstract class AbstractFileReader extends AbstractReader implements \SeekableIte
 	 */
 	public function getFilePath()
 	{
-		return $this->file_path;
+		return $this->filePath;
 	}
 
 	/**
-	 * @param string $file_path
+	 * @param string $filePath
 	 *
 	 * @return $this
 	 */
-	public function setFilePath($file_path)
+	public function setFilePath($filePath)
 	{
-		$this->file_path = $file_path;
+		$this->filePath = $filePath;
 		return $this;
 	}
 

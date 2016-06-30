@@ -10,7 +10,7 @@ class CsvReader extends AbstractFileReader
 	/**
 	 * CsvReader constructor.
 	 *
-	 * @param string $file_path
+	 * @param string $file_path - The absolute path to the file.
 	 * @param string $delimiter
 	 * @param string $enclosure
 	 * @param string $escape

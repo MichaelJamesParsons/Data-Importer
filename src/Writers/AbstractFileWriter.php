@@ -8,16 +8,16 @@ namespace michaeljamesparsons\DataImporter\Writers;
 abstract class AbstractFileWriter extends AbstractWriter
 {
 	/** @var  string */
-	protected $file_path;
+	protected $filePath;
 
 	/**
 	 * AbstractFileWriter constructor.
 	 *
-	 * @param string $file_path
+	 * @param string $filePath - The absolute path to the file.
 	 */
-	public function __construct($file_path)
+	public function __construct($filePath)
 	{
-		$this->file_path = $file_path;
+		$this->filePath = $filePath;
 	}
 
 	/**
@@ -25,17 +25,17 @@ abstract class AbstractFileWriter extends AbstractWriter
 	 */
 	public function getFilePath()
 	{
-		return $this->file_path;
+		return $this->filePath;
 	}
 
 	/**
-	 * @param string $file_path
+	 * @param string $filePath
 	 *
 	 * @return $this
 	 */
-	public function setFilePath($file_path)
+	public function setFilePath($filePath)
 	{
-		$this->file_path = $file_path;
+		$this->filePath = $filePath;
 		return $this;
 	}
 }

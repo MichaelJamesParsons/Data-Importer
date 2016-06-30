@@ -4,6 +4,8 @@ namespace michaeljamesparsons\DataImporter\Writers;
 /**
  * Class AbstractOrmWriter
  * @package michaeljamesparsons\DataImporter\Writers
+ *
+ * @todo Move context logic to another class.
  */
 abstract class AbstractOrmWriter extends AbstractDatabaseWriter
 {
