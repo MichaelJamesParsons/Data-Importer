@@ -1,7 +1,8 @@
 <?php
 namespace michaeljamesparsons\DataImporter\Writers;
-use michaeljamesparsons\DataImporter\Cache\AbstractCache;
-use michaeljamesparsons\DataImporter\Cache\ArrayCache;
+
+use michaeljamesparsons\DataImporter\Cache\AbstractCacheDriver;
+use michaeljamesparsons\DataImporter\Cache\Drivers\DictionaryCacheDriver;
 
 /**
  * Class AbstractWriter
@@ -9,7 +10,7 @@ use michaeljamesparsons\DataImporter\Cache\ArrayCache;
  */
 abstract class AbstractWriter
 {
-	/** @var  AbstractCache */
+	/** @var  AbstractCacheDriver */
 	protected $cache;
 
 	/** @var  bool */
@@ -18,11 +19,11 @@ abstract class AbstractWriter
 	/**
 	 * AbstractWriter constructor.
 	 *
-	 * @param AbstractCache $cache
+	 * @param AbstractCacheDriver $cache
 	 */
-	public function __construct(AbstractCache $cache = null)
+	public function __construct(AbstractCacheDriver $cache = null)
 	{
-		$this->cache = (!empty($cache)) ? $cache : new ArrayCache();
+		$this->cache = (!empty($cache)) ? $cache : new DictionaryCacheDriver();
 
 		/**
 		 * Caching is disabled by default to optimize the speed and memory usage of this writer. It should

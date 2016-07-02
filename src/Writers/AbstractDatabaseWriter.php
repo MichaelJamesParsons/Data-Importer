@@ -10,100 +10,101 @@ use michaeljamesparsons\DataImporter\Helpers\RecordWrapper;
  */
 abstract class AbstractDatabaseWriter extends AbstractWriter
 {
-	/**
-	 * The number of items imported.
-	 * @var int
-	 */
-	protected $count;
+    /**
+     * The number of items imported.
+     * @var int
+     */
+    protected $count;
 
-	/**
-	 * The number of records to save at one time.
-	 * @var int
-	 */
-	protected $bundleSize;
+    /**
+     * The number of records to save at one time.
+     * @var int
+     */
+    protected $bundleSize;
 
-	/** @var  bool */
-	protected $truncate;
+    /** @var  bool */
+    protected $truncate;
 
-	/**
-	 * AbstractDatabaseWriter constructor.
-	 *
-	 * @param int $bundleSize
-	 */
-	public function __construct($bundleSize = 300)
-	{
-		parent::__construct();
-		$this->bundleSize = $bundleSize;
-		$this->count = 0;
-		$this->cache  = new RecordIndexCache();
-		$this->enableCache = false;
-	}
+    /**
+     * AbstractDatabaseWriter constructor.
+     *
+     * @param int $bundleSize
+     */
+    public function __construct($bundleSize = 300)
+    {
+        parent::__construct();
 
-	/**
-	 * @return boolean
-	 */
-	public function truncate()
-	{
-		return $this->truncate;
-	}
+        $this->bundleSize  = $bundleSize;
+        $this->count       = 0;
+    }
 
-	/**
-	 * @param boolean $truncate
-	 */
-	public function setTruncate($truncate)
-	{
-		$this->truncate = $truncate;
-	}
+    /**
+     * @return boolean
+     */
+    public function truncate()
+    {
+        return $this->truncate;
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function before()
-	{
-		if($this->truncate) {
-			$this->truncateTable();
-		}
-	}
+    /**
+     * @param boolean $truncate
+     */
+    public function setTruncate($truncate)
+    {
+        $this->truncate = $truncate;
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function after() {
-		$this->flush();
-	}
+    /**
+     * @inheritdoc
+     */
+    public function before()
+    {
+        if ($this->truncate) {
+            $this->truncateTable();
+        }
+    }
 
-	/**
-	 * Fetch an existing record or create a new one if it does not already exist.
-	 *
-	 * @param RecordWrapper $item
-	 * @return object - The record or entity.
-	 */
-	protected abstract function findOrCreateIfNotExists(RecordWrapper $item);
+    /**
+     * @inheritdoc
+     */
+    public function after()
+    {
+        $this->flush();
+    }
 
-	/**
-	 * Turn on database query logging.
-	 */
-	protected abstract function enableDatabaseLogging();
+    /**
+     * Fetch an existing record or create a new one if it does not already exist.
+     *
+     * @param $item
+     *
+     * @return object - The record or entity.
+     */
+    protected abstract function findOrCreateIfNotExists($item);
 
-	/**
-	 * Turn off database query logging.
-	 */
-	protected abstract function disableDatabaseLogging();
+    /**
+     * Turn on database query logging.
+     */
+    protected abstract function enableDatabaseLogging();
 
-	/**
-	 * Truncate the table associated with the records being imported.
-	 */
-	protected abstract function truncateTable();
+    /**
+     * Turn off database query logging.
+     */
+    protected abstract function disableDatabaseLogging();
 
-	/**
-	 * Add parsed item to the bundle to be saved.
-	 *
-	 * @param $item - The record or entity to be persisted.
-	 */
-	protected abstract function persist($item);
+    /**
+     * Truncate the table associated with the records being imported.
+     */
+    protected abstract function truncateTable();
 
-	/**
-	 * Save a bundle of records.
-	 */
-	protected abstract function flush();
+    /**
+     * Add parsed item to the bundle to be saved.
+     *
+     * @param $item - The record or entity to be persisted.
+     */
+    protected abstract function persist($item);
+
+    /**
+     * Save a bundle of records.
+     */
+    protected abstract function flush();
 }

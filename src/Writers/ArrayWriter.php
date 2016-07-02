@@ -1,6 +1,8 @@
 <?php
 namespace michaeljamesparsons\DataImporter\Writers;
 
+use michaeljamesparsons\DataImporter\Cache\AbstractCacheDriver;
+
 /**
  * Class ArrayWriter
  * @package michaeljamesparsons\DataImporter\Writers
@@ -17,11 +19,14 @@ class ArrayWriter extends AbstractWriter
 	 */
 	protected $data;
 
-	/**
-	 * ArrayWriter constructor.
-	 */
-	public function __construct()
+    /**
+     * ArrayWriter constructor.
+     *
+     * @param AbstractCacheDriver $driver
+     */
+	public function __construct(AbstractCacheDriver $driver)
 	{
+        parent::__construct($driver);
 		$this->data = [];
 	}
 
