@@ -1,39 +1,49 @@
 <?php
 namespace michaeljamesparsons\DataImporter\Writers;
 
-use michaeljamesparsons\DataImporter\Helpers\RecordIndexCache;
-use michaeljamesparsons\DataImporter\Helpers\RecordWrapper;
+use michaeljamesparsons\DataImporter\Cache\AbstractCacheDriver;
+use michaeljamesparsons\DataImporter\Context\AbstractDatabaseContext;
 
 /**
  * Class AbstractDatabaseWriter
  * @package michaeljamesparsons\DataImporter\Writers
  */
-abstract class AbstractDatabaseWriter extends AbstractWriter
+abstract class AbstractDatabaseWriter extends AbstractSourceWriter
 {
     /**
      * The number of items imported.
+     *
      * @var int
      */
     protected $count;
 
     /**
      * The number of records to save at one time.
+     *
      * @var int
      */
     protected $bundleSize;
 
-    /** @var  bool */
+    /**
+     * If true, the database tables will be truncated before executing the import.
+     * 
+     * @var  bool
+     */
     protected $truncate;
 
     /**
      * AbstractDatabaseWriter constructor.
      *
-     * @param int $bundleSize
+     * @param AbstractDatabaseContext $context
+     * @param AbstractCacheDriver     $cache
+     * @param int                     $bundleSize
      */
-    public function __construct($bundleSize = 300)
+    public function __construct(AbstractDatabaseContext $context, AbstractCacheDriver $cache = null, $bundleSize = 300)
     {
-        parent::__construct();
+        parent::__construct($context, $cache);
 
+        //This is here for IDE code completion purposes.
+        $this->context = $context;
         $this->bundleSize  = $bundleSize;
         $this->count       = 0;
     }
@@ -60,7 +70,7 @@ abstract class AbstractDatabaseWriter extends AbstractWriter
     public function before()
     {
         if ($this->truncate) {
-            $this->truncateTable();
+            $this->context->truncateTable();
         }
     }
 
@@ -69,7 +79,7 @@ abstract class AbstractDatabaseWriter extends AbstractWriter
      */
     public function after()
     {
-        $this->flush();
+        $this->context->flush();
     }
 
     /**
@@ -80,31 +90,4 @@ abstract class AbstractDatabaseWriter extends AbstractWriter
      * @return object - The record or entity.
      */
     protected abstract function findOrCreateIfNotExists($item);
-
-    /**
-     * Turn on database query logging.
-     */
-    protected abstract function enableDatabaseLogging();
-
-    /**
-     * Turn off database query logging.
-     */
-    protected abstract function disableDatabaseLogging();
-
-    /**
-     * Truncate the table associated with the records being imported.
-     */
-    protected abstract function truncateTable();
-
-    /**
-     * Add parsed item to the bundle to be saved.
-     *
-     * @param $item - The record or entity to be persisted.
-     */
-    protected abstract function persist($item);
-
-    /**
-     * Save a bundle of records.
-     */
-    protected abstract function flush();
 }

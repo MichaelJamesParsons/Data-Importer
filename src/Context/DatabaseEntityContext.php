@@ -5,7 +5,7 @@ namespace michaeljamesparsons\DataImporter\Context;
  * Class DatabaseEntityContext
  * @package michaeljamesparsons\DataImporter\Context
  */
-class DatabaseEntityContext extends ObjectContext
+class DatabaseEntityContext extends EntityContext
 {
 	/**
 	 * The primary key of the table or entity. If the table contains composite primary keys, you should include
@@ -25,19 +25,6 @@ class DatabaseEntityContext extends ObjectContext
 	protected $importablePrimaryKey;
 
 	/**
-	 * A list of foreign key relationships.
-	 *
-	 * These relationships must be defined in order to import records that are related to each other in a
-	 * single import.
-	 *
-	 * @var  array
-	 *
-	 * @todo Make foreign key object.
-	 * @todo Create an "addForeignKey" method.
-	 */
-	protected $foreignKeys;
-
-	/**
 	 * DatabaseEntityContext constructor.
 	 *
 	 * @param string $name
@@ -49,9 +36,9 @@ class DatabaseEntityContext extends ObjectContext
 	{
 		parent::__construct($name);
 
-		$this->primaryKey  = $primaryKey;
-		$this->foreignKeys = $foreignKeys;
-		$this->indexFields = $indexFields;
+		$this->primaryKey   = $primaryKey;
+		$this->associations = $foreignKeys;
+		$this->indexFields  = $indexFields;
 	}
 
 	/**
@@ -89,25 +76,6 @@ class DatabaseEntityContext extends ObjectContext
 	public function setImportablePrimaryKey($importablePrimaryKey)
 	{
 		$this->importablePrimaryKey = $importablePrimaryKey;
-		return $this;
-	}
-
-	/**
-	 * @return array
-	 */
-	public function getForeignKeys()
-	{
-		return $this->foreignKeys;
-	}
-
-	/**
-	 * @param array $foreignKeys
-	 *
-	 * @return $this
-	 */
-	public function setForeignKeys($foreignKeys)
-	{
-		$this->foreignKeys = $foreignKeys;
 		return $this;
 	}
 }

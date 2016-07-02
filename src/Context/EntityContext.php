@@ -2,10 +2,10 @@
 namespace michaeljamesparsons\DataImporter\Context;
 
 /**
- * Class ObjectContext
+ * Class EntityContext
  * @package michaeljamesparsons\DataImporter\Context
  */
-class ObjectContext
+class EntityContext
 {
 	/**
 	 * The name of the object.
@@ -16,6 +16,16 @@ class ObjectContext
 	 * @var  string
 	 */
 	protected $name;
+
+    /**
+     * A list of foreign key relationships.
+     *
+     * These relationships must be defined in order to import records that are related to each other in a
+     * single import.
+     *
+     * @var  array
+     */
+    protected $associations;
 
 	/**
 	 * This is a list of fields that can be used to uniquely identify a record. The importer will use these fields
@@ -30,7 +40,7 @@ class ObjectContext
 	protected $indexFields;
 
 	/**
-	 * ObjectContext constructor.
+	 * EntityContext constructor.
 	 *
 	 * @param $name
 	 */
@@ -57,6 +67,35 @@ class ObjectContext
 		$this->name = $name;
 		return $this;
 	}
+
+    /**
+     * @return array
+     */
+    public function getAssociations()
+    {
+        return $this->associations;
+    }
+
+    /**
+     * @param array $associations
+     *
+     * @return $this
+     */
+    public function setAssociations($associations)
+    {
+        $this->associations = $associations;
+        return $this;
+    }
+
+    /**
+     * @param Association $association
+     *
+     * @return $this
+     */
+    public function addAssociation(Association $association) {
+        $this->associations[] = $association;
+        return $this;
+    }
 
 	/**
 	 * @return array

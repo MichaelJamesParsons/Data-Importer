@@ -2,10 +2,10 @@
 namespace michaeljamesparsons\DataImporter\Context;
 
 /**
- * Class ForeignKeyContext
+ * Class Association
  * @package michaeljamesparsons\DataImporter\Context
  */
-class ForeignKeyContext
+class Association
 {
 	const TYPE_ONE_TO_ONE   = 1;
 	const TYPE_ONE_TO_MANY  = 2;

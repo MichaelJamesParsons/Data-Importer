@@ -39,23 +39,34 @@ class DefaultWorkflow extends AbstractWorkflow
 	protected function processReaders(AbstractWriter $writer) {
 		/** @var AbstractReader $reader */
 		foreach($this->readers as $reader) {
-			foreach($reader as $item) {
-				try {
-					if(!$reader->filter($item)) {
-						continue;
-					}
-
-					$writer->write($reader->convert($item));
-					$this->reporter->incrementImportCount();
-				} catch(\Exception $e) {
-                    $this->reporter->incrementErrorCount();
-					if($this->skipRecordOnError) {
-						continue;
-					}
-
-					throw $e;
-				}
-			}
+            foreach($reader as $item) {
+                $this->processItem($reader, $writer, $item);
+            }
 		}
 	}
+
+    /**
+     * @param AbstractReader $reader
+     * @param AbstractWriter $writer
+     * @param array          $item
+     *
+     * @throws \Exception
+     */
+    protected function processItem(AbstractReader $reader, AbstractWriter $writer, array $item) {
+        try {
+            if(!$reader->filter($item)) {
+                return;
+            }
+
+            $writer->write($reader->convert($item));
+            $this->reporter->incrementImportCount();
+        } catch(\Exception $e) {
+            $this->reporter->incrementErrorCount();
+            if($this->skipRecordOnError) {
+                return;
+            }
+
+            throw $e;
+        }
+    }
 }
