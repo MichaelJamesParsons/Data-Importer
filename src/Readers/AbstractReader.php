@@ -1,8 +1,8 @@
 <?php
 namespace michaeljamesparsons\DataImporter\Readers;
 
-use michaeljamesparsons\DataImporter\Converters\IConverter;
-use michaeljamesparsons\DataImporter\Filters\IFilterable;
+use michaeljamesparsons\DataImporter\Converters\ConverterInterface;
+use michaeljamesparsons\DataImporter\Filters\FilterInterface;
 
 /**
  * Class AbstractReader
@@ -25,11 +25,11 @@ abstract class AbstractReader implements \Iterator
 	/**
 	 * Adds a filter to the reader's filter queue.
 	 *
-	 * @param IFilterable $filter
+	 * @param FilterInterface $filter
 	 *
 	 * @return $this
 	 */
-	public function addFilter(IFilterable $filter) {
+	public function addFilter(FilterInterface $filter) {
 		$this->filters[] = $filter;
 		return $this;
 	}
@@ -42,7 +42,7 @@ abstract class AbstractReader implements \Iterator
 	 * @return bool
 	 */
 	public function filter(array $item) {
-		/** @var IFilterable $filter */
+		/** @var FilterInterface $filter */
 		foreach($this->filters as $filter) {
 			if(!$filter->filter($item)) {
 				return false;
@@ -53,11 +53,11 @@ abstract class AbstractReader implements \Iterator
 	}
 
 	/**
-	 * @param IConverter $converter
+	 * @param ConverterInterface $converter
 	 *
 	 * @return $this
 	 */
-	public function addConverter(IConverter $converter)
+	public function addConverter(ConverterInterface $converter)
 	{
 		$this->converters[] = $converter;
 		return $this;
@@ -69,7 +69,7 @@ abstract class AbstractReader implements \Iterator
 	 * @return array
 	 */
 	public function convert($item) {
-		/** @var IConverter $converter */
+		/** @var ConverterInterface $converter */
 		foreach($this->converters as $converter) {
 			$item = $converter->convert($item);
 		}
