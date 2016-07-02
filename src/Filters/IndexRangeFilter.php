@@ -9,7 +9,7 @@ namespace michaeljamesparsons\DataImporter\Filters;
  *
  * This filter can be used to start and stop an import at specific at any points.
  */
-class IndexRangeFilter implements IFilterable
+class IndexRangeFilter implements FilterInterface
 {
 	/** @var  int */
 	protected $start;

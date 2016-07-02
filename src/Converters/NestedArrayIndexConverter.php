@@ -2,17 +2,16 @@
 namespace michaeljamesparsons\DataImporter\Converters;
 
 /**
- * Class NestedArrayIndexConverter
+ * Class NestedArrayIndexConverterInterface
  * @package michaeljamesparsons\DataImporter\Converters
  */
-class NestedArrayIndexConverter implements IConverter
+class NestedArrayIndexConverterInterface implements ConverterInterface
 {
-
 	/** @var  string */
 	protected $mapping;
 
 	/**
-	 * NestedArrayIndexConverter constructor.
+	 * NestedArrayIndexConverterInterface constructor.
 	 *
 	 * @param array $mapping
 	 */

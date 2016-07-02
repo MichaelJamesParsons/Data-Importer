@@ -2,12 +2,12 @@
 namespace michaeljamesparsons\DataImporter\Converters;
 
 /**
- * Class IndexMergeConverter
+ * Class IndexMergeConverterInterface
  * @package michaeljamesparsons\DataImporter\Converters
  *
  * Merges the values of 1-n indexes into a single new index.
  */
-class IndexMergeConverter implements IConverter
+class IndexMergeConverterInterface implements ConverterInterface
 {
 	/** @var  array */
 	protected $indexes;

@@ -2,10 +2,10 @@
 namespace michaeljamesparsons\DataImporter\Converters;
 
 /**
- * Class ValueToDateTimeConverter
+ * Class ValueToDateTimeConverterInterface
  * @package michaeljamesparsons\DataImporter\Converters
  */
-class ValueToDateTimeConverter implements IConverter
+class ValueToDateTimeConverterInterface implements ConverterInterface
 {
 	/** @var  string */
 	protected $index;
@@ -14,7 +14,7 @@ class ValueToDateTimeConverter implements IConverter
 	private $timezone;
 
 	/**
-	 * ValueToDateTimeConverter constructor.
+	 * ValueToDateTimeConverterInterface constructor.
 	 *
 	 * @param               $index
 	 * @param \DateTimeZone $timezone

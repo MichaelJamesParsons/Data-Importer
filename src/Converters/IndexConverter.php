@@ -2,10 +2,10 @@
 namespace michaeljamesparsons\DataImporter\Converters;
 
 /**
- * Class IndexConverter
+ * Class IndexConverterInterface
  * @package michaeljamesparsons\DataImporter\Converters
  */
-class IndexConverter implements IConverter
+class IndexConverterInterface implements ConverterInterface
 {
 	/** @var  string */
 	protected $index;
@@ -14,7 +14,7 @@ class IndexConverter implements IConverter
 	protected $rename;
 
 	/**
-	 * IndexConverter constructor.
+	 * IndexConverterInterface constructor.
 	 *
 	 * @param $index
 	 * @param $rename

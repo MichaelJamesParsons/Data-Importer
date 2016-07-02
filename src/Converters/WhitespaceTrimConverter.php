@@ -2,10 +2,10 @@
 namespace michaeljamesparsons\DataImporter\Converters;
 
 /**
- * Class WhitespaceTrimConverter
+ * Class WhitespaceTrimConverterInterface
  * @package michaeljamesparsons\DataImporter\Converters
  */
-class WhitespaceTrimConverter implements IConverter
+class WhitespaceTrimConverterInterface implements ConverterInterface
 {
 	/** @var  array */
 	protected $indexes;

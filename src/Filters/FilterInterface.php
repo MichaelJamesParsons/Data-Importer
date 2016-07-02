@@ -2,10 +2,10 @@
 namespace michaeljamesparsons\DataImporter\Filters;
 
 /**
- * Interface IFilterable
+ * Interface FilterInterface
  * @package michaeljamesparsons\DataImporter\Filters
  */
-interface IFilterable
+interface FilterInterface
 {
 	/**
 	 * @param array $item
