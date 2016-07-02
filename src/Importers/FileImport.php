@@ -1,8 +1,8 @@
 <?php
 namespace michaeljamesparsons\DataImporter\Importers;
 
-use michaeljamesparsons\DataImporter\Converters\IConverter;
-use michaeljamesparsons\DataImporter\Filters\IFilterable;
+use michaeljamesparsons\DataImporter\Converters\ConverterInterface;
+use michaeljamesparsons\DataImporter\Filters\FilterInterface;
 
 /**
  * Class FileImport
@@ -15,9 +15,6 @@ class FileImport extends AbstractImporter
 
 	/** @var  string */
 	protected $fileName;
-
-	/** @var  string */
-	protected $entity;
 
 	/** @var  array */
 	protected $filters;
@@ -77,22 +74,6 @@ class FileImport extends AbstractImporter
 	}
 
 	/**
-	 * @return string
-	 */
-	public function getEntity()
-	{
-		return $this->entity;
-	}
-
-	/**
-	 * @param string $entity
-	 */
-	public function setEntity($entity)
-	{
-		$this->entity = $entity;
-	}
-
-	/**
 	 * @return array
 	 */
 	public function getFilters()
@@ -101,9 +82,9 @@ class FileImport extends AbstractImporter
 	}
 
 	/**
-	 * @param IFilterable $filter
+	 * @param FilterInterface $filter
 	 */
-	public function addFilter(IFilterable $filter) {
+	public function addFilter(FilterInterface $filter) {
 		$this->filters = $filter;
 	}
 
@@ -116,9 +97,9 @@ class FileImport extends AbstractImporter
 	}
 
 	/**
-	 * @param IConverter $converter
+	 * @param ConverterInterface $converter
 	 */
-	public function addConverter(IConverter $converter) {
+	public function addConverter(ConverterInterface $converter) {
 		$this->converters[] = $converter;
 	}
 }
