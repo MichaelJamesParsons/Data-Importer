@@ -1,14 +1,24 @@
 <?php
-namespace michaeljamesparsons\DataImporter\Cache;
+namespace michaeljamesparsons\DataImporter\Cache\Drivers;
+
+use michaeljamesparsons\DataImporter\Cache\AbstractCacheDriver;
 
 /**
- * Class ArrayCache
- * @package michaeljamesparsons\DataImporter\Cache
+ * Class Driver
+ * @package michaeljamesparsons\DataImporter\Cache\Drivers
  */
-class ArrayCache extends AbstractCache
+class DictionaryCacheDriver extends AbstractCacheDriver
 {
 	/** @var  array */
 	protected $cache;
+
+	/**
+	 * Driver constructor.
+	 */
+	public function __construct()
+	{
+		$this->cache = [];
+	}
 
 	/**
 	 * @inheritdoc
