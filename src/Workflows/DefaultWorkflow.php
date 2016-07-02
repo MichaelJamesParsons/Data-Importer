@@ -1,5 +1,5 @@
 <?php
-namespace michaeljamesparsons\DataImporter\Workers;
+namespace michaeljamesparsons\DataImporter\Workflows;
 
 use Exception;
 use michaeljamesparsons\DataImporter\Readers\AbstractReader;

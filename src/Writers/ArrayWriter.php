@@ -24,7 +24,7 @@ class ArrayWriter extends AbstractWriter
      *
      * @param AbstractCacheDriver $driver
      */
-	public function __construct(AbstractCacheDriver $driver)
+	public function __construct(AbstractCacheDriver $driver = null)
 	{
         parent::__construct($driver);
 		$this->data = [];
