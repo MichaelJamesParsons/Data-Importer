@@ -5,18 +5,8 @@ namespace michaeljamesparsons\DataImporter\Context;
  * Class DatabaseEntityContext
  * @package michaeljamesparsons\DataImporter\Context
  */
-class DatabaseEntityContext
+class DatabaseEntityContext extends ObjectContext
 {
-	/**
-	 * The name of the database table or entity.
-	 *
-	 * ORM oriented database contexts should provide the fully qualified namespace of the entity they intend to import.
-	 * Contexts that directly interact with the database without an ORM should set this value to the name of the table.
-	 *
-	 * @var  string
-	 */
-	protected $name;
-
 	/**
 	 * The primary key of the table or entity. If the table contains composite primary keys, you should include
 	 * all of them in the array of $indexFields to prevent importing duplicates.
@@ -48,21 +38,6 @@ class DatabaseEntityContext
 	protected $foreignKeys;
 
 	/**
-	 * A list of table columns or entity properties that uniquely identify the record in the database.
-	 *
-	 * These fields uniquely identify records that may already exist in the database. For example, a `categories`
-	 * table may contain two fields: `id` and `category_name`. Both fields uniquely identifies the category, but only
-	 * the ID makes up the primary key. For imports where category names are expected to also be unique, you would add
-	 * `category_name` to this list. Upon importing a new category, the database writer will check if the a category
-	 * with that ID already exists before inserting it.
-	 *
-	 * Incremental primary keys should NOT be included in this list.
-	 *
-	 * @var  array
-	 */
-	protected $indexFields;
-
-	/**
 	 * DatabaseEntityContext constructor.
 	 *
 	 * @param string $name
@@ -72,29 +47,11 @@ class DatabaseEntityContext
 	 */
 	public function __construct($name, $primaryKey, array $foreignKeys = [], array $indexFields = [])
 	{
-		$this->name        = $name;
+		parent::__construct($name);
+
 		$this->primaryKey  = $primaryKey;
 		$this->foreignKeys = $foreignKeys;
 		$this->indexFields = $indexFields;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getName()
-	{
-		return $this->name;
-	}
-
-	/**
-	 * @param string $name
-	 *
-	 * @return $this
-	 */
-	public function setName($name)
-	{
-		$this->name = $name;
-		return $this;
 	}
 
 	/**
@@ -151,35 +108,6 @@ class DatabaseEntityContext
 	public function setForeignKeys($foreignKeys)
 	{
 		$this->foreignKeys = $foreignKeys;
-		return $this;
-	}
-
-	/**
-	 * @return array
-	 */
-	public function getIndexFields()
-	{
-		return $this->indexFields;
-	}
-
-	/**
-	 * @param array $indexFields
-	 *
-	 * @return $this
-	 */
-	public function setIndexFields($indexFields)
-	{
-		$this->indexFields = $indexFields;
-		return $this;
-	}
-
-	/**
-	 * @param $field
-	 *
-	 * @return $this
-	 */
-	public function addIndexField($field) {
-		$this->indexFields[] = $field;
 		return $this;
 	}
 }

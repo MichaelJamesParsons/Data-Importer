@@ -10,12 +10,6 @@ use michaeljamesparsons\DataImporter\Helpers\RecordWrapper;
  */
 abstract class AbstractDatabaseWriter extends AbstractWriter
 {
-	/** @var  RecordIndexCache */
-	protected $cache;
-
-	/** @var  bool */
-	protected $enableCache;
-
 	/**
 	 * The number of items imported.
 	 * @var int
@@ -38,6 +32,7 @@ abstract class AbstractDatabaseWriter extends AbstractWriter
 	 */
 	public function __construct($bundleSize = 300)
 	{
+		parent::__construct();
 		$this->bundleSize = $bundleSize;
 		$this->count = 0;
 		$this->cache  = new RecordIndexCache();

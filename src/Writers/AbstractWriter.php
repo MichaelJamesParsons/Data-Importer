@@ -1,5 +1,7 @@
 <?php
 namespace michaeljamesparsons\DataImporter\Writers;
+use michaeljamesparsons\DataImporter\Cache\AbstractCache;
+use michaeljamesparsons\DataImporter\Cache\ArrayCache;
 
 /**
  * Class AbstractWriter
@@ -7,6 +9,38 @@ namespace michaeljamesparsons\DataImporter\Writers;
  */
 abstract class AbstractWriter
 {
+	/** @var  AbstractCache */
+	protected $cache;
+
+	/** @var  bool */
+	protected $cacheEnabled;
+
+	/**
+	 * AbstractWriter constructor.
+	 *
+	 * @param AbstractCache $cache
+	 */
+	public function __construct(AbstractCache $cache = null)
+	{
+		$this->cache = (!empty($cache)) ? $cache : new ArrayCache();
+
+		/**
+		 * Caching is disabled by default to optimize the speed and memory usage of this writer. It should
+		 * be enabled when a writer requires the storage of key mappings of objection relationships, or information
+		 * that must persist across multiple readers.
+		 */
+		$this->cacheEnabled = false;
+	}
+
+	/**
+	 * Checks if caching is enabled for this writer.
+	 *
+	 * @return bool
+	 */
+	public function isCacheEnabled() {
+		return $this->cacheEnabled;
+	}
+
 	/**
 	 * Import a single item.
 	 *
