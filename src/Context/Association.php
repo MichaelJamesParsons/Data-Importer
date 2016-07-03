@@ -7,19 +7,19 @@ namespace michaeljamesparsons\DataImporter\Context;
  */
 class Association
 {
-	const TYPE_ONE_TO_ONE   = 1;
-	const TYPE_ONE_TO_MANY  = 2;
-	const TYPE_MANY_TO_ONE  = 3;
-	const TYPE_MANY_TO_MANY = 4;
+    const TYPE_ONE_TO_ONE = 1;
+    const TYPE_ONE_TO_MANY = 2;
+    const TYPE_MANY_TO_ONE = 3;
+    const TYPE_MANY_TO_MANY = 4;
 
-	/** @var  string */
-	protected $sourceProperty;
+    /** @var  string */
+    protected $sourceProperty;
 
-	/** @var  string */
-	protected $targetObject;
+    /** @var  string */
+    protected $targetObject;
 
-	/** @var  string */
-	protected $type;
+    /** @var  string */
+    protected $type;
 
     /**
      * Association constructor.
@@ -30,74 +30,79 @@ class Association
      */
     public function __construct($sourceProperty, $targetObject, $type = null)
     {
-        $this->targetObject = $targetObject;
+        $this->targetObject   = $targetObject;
         $this->sourceProperty = $sourceProperty;
-        $this->type = $type;
+        $this->type           = $type;
     }
 
     /**
-	 * @return string
-	 */
-	public function getSourceProperty()
-	{
-		return $this->sourceProperty;
-	}
+     * @return string
+     */
+    public function getSourceProperty()
+    {
+        return $this->sourceProperty;
+    }
 
-	/**
-	 * @param string $sourceProperty
-	 *
-	 * @return $this
-	 */
-	public function setSourceProperty($sourceProperty)
-	{
-		$this->sourceProperty = $sourceProperty;
-		return $this;
-	}
+    /**
+     * @param string $sourceProperty
+     *
+     * @return $this
+     */
+    public function setSourceProperty($sourceProperty)
+    {
+        $this->sourceProperty = $sourceProperty;
 
-	/**
-	 * @return string
-	 */
-	public function getTargetObject()
-	{
-		return $this->targetObject;
-	}
+        return $this;
+    }
 
-	/**
-	 * @param string $targetObject
-	 *
-	 * @return $this
-	 */
-	public function setTargetObject($targetObject)
-	{
-		$this->targetObject = $targetObject;
-		return $this;
-	}
+    /**
+     * @return string
+     */
+    public function getTargetObject()
+    {
+        return $this->targetObject;
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getType()
-	{
-		return $this->type;
-	}
+    /**
+     * @param string $targetObject
+     *
+     * @return $this
+     */
+    public function setTargetObject($targetObject)
+    {
+        $this->targetObject = $targetObject;
 
-	/**
-	 * @param string $type
-	 *
-	 * @return $this
-	 * @throws \Exception
-	 */
-	public function setType($type)
-	{
-		if(!in_array($type, [
-			self::TYPE_ONE_TO_ONE,
-		    self::TYPE_ONE_TO_MANY,
-		    self::TYPE_MANY_TO_ONE,
-		    self::TYPE_MANY_TO_MANY])) {
-			throw new \Exception("Invalid foreign key type {$type}.");
-		}
+        return $this;
+    }
 
-		$this->type = $type;
-		return $this;
-	}
+    /**
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param string $type
+     *
+     * @return $this
+     * @throws \Exception
+     */
+    public function setType($type)
+    {
+        if (!in_array($type, [
+            self::TYPE_ONE_TO_ONE,
+            self::TYPE_ONE_TO_MANY,
+            self::TYPE_MANY_TO_ONE,
+            self::TYPE_MANY_TO_MANY
+        ])
+        ) {
+            throw new \Exception("Invalid foreign key type {$type}.");
+        }
+
+        $this->type = $type;
+
+        return $this;
+    }
 }

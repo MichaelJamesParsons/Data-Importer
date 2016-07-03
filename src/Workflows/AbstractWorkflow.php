@@ -35,8 +35,8 @@ abstract class AbstractWorkflow implements LoggerAwareInterface
      */
     public function __construct()
     {
-        $this->readers = [];
-        $this->writers = [];
+        $this->readers           = [];
+        $this->writers           = [];
         $this->skipRecordOnError = true;
 
         /**
@@ -57,8 +57,10 @@ abstract class AbstractWorkflow implements LoggerAwareInterface
      *
      * @return $this
      */
-    public function skipRecordOnError($skip = true) {
+    public function skipRecordOnError($skip = true)
+    {
         $this->skipRecordOnError = $skip;
+
         return $this;
     }
 
@@ -67,8 +69,10 @@ abstract class AbstractWorkflow implements LoggerAwareInterface
      *
      * @return $this
      */
-    public function addReader(AbstractReader $reader) {
+    public function addReader(AbstractReader $reader)
+    {
         $this->readers[] = $reader;
+
         return $this;
     }
 
@@ -77,8 +81,10 @@ abstract class AbstractWorkflow implements LoggerAwareInterface
      *
      * @return $this
      */
-    public function addWriter(AbstractWriter $writer) {
+    public function addWriter(AbstractWriter $writer)
+    {
         $this->writers[] = $writer;
+
         return $this;
     }
 
@@ -93,7 +99,8 @@ abstract class AbstractWorkflow implements LoggerAwareInterface
     /**
      * @param ReporterInterface $reporter
      */
-    public function setReporter(ReporterInterface $reporter) {
+    public function setReporter(ReporterInterface $reporter)
+    {
         $this->reporter = $reporter;
     }
 

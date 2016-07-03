@@ -7,71 +7,75 @@ namespace michaeljamesparsons\DataImporter\Helpers;
  */
 class RecordIndexCache
 {
-	/** @var  array */
-	protected $pendingRecords;
+    /** @var  array */
+    protected $pendingRecords;
 
-	/** @var  array */
-	protected $keyMappings;
+    /** @var  array */
+    protected $keyMappings;
 
-	public function __construct()
-	{
-		$this->pendingRecords = [];
-		$this->keyMappings    = [];
-	}
+    public function __construct()
+    {
+        $this->pendingRecords = [];
+        $this->keyMappings    = [];
+    }
 
-	/**
-	 * @param $entity
-	 * @param $key
-	 * @param $object
-	 */
-	public function addPendingEntity($entity, $key, $object) {
-		$this->pendingRecords[ $entity][ $key] = $object;
-	}
+    /**
+     * @param $entity
+     * @param $key
+     * @param $object
+     */
+    public function addPendingEntity($entity, $key, $object)
+    {
+        $this->pendingRecords[$entity][$key] = $object;
+    }
 
-	/**
-	 * @param $entity
-	 * @param $oldKey
-	 * @param $newKey
-	 */
-	public function addKeyMapping($entity, $oldKey, $newKey) {
-		if(!array_key_exists($entity, $this->keyMappings)) {
-			$this->keyMappings[$entity] = [];
-		}
+    /**
+     * @param $key
+     * @param $entity
+     *
+     * @return mixed
+     */
+    public function findMapping($key, $entity)
+    {
+        if (!empty($this->keyMappings[$entity][$key])) {
+            return $this->keyMappings[$entity][$key];
+        }
 
-		$this->keyMappings[$entity][$oldKey] = $newKey;
-	}
+        return null;
+    }
 
-	/**
-	 * @param $key
-	 * @param $entity
-	 *
-	 * @return mixed
-	 */
-	public function findMapping($key, $entity) {
-		if(!empty($this->keyMappings[$entity][$key])) {
-			return $this->keyMappings[$entity][$key];
-		}
+    /**
+     * @param array $mappers
+     */
+    public function flush(array $mappers)
+    {
+        /** @var EntityMapper $mapper */
+        foreach ($mappers as $mapper) {
+            $key      = $mapper->getPrimaryKey();
+            $entities = $this->pendingRecords[$mapper->getEntity()];
+            $getter   = $mapper->getPropertyGetter($key);
 
-		return null;
-	}
+            if (is_array($entities)) {
+                foreach ($entities as $oldKey => $entity) {
+                    $id = call_user_func_array([$entity, $getter], []);
+                    $this->addKeyMapping($mapper->getEntity(), $oldKey, $id);
+                }
+            }
+        }
+        $this->pendingRecords = [];
+    }
 
-	/**
-	 * @param array $mappers
-	 */
-	public function flush(array $mappers) {
-		/** @var EntityMapper $mapper */
-		foreach($mappers as $mapper) {
-			$key = $mapper->getPrimaryKey();
-			$entities = $this->pendingRecords[ $mapper->getEntity()];
-			$getter = $mapper->getPropertyGetter($key);
+    /**
+     * @param $entity
+     * @param $oldKey
+     * @param $newKey
+     */
+    public function addKeyMapping($entity, $oldKey, $newKey)
+    {
+        if (!array_key_exists($entity, $this->keyMappings)) {
+            $this->keyMappings[$entity] = [];
+        }
 
-			if(is_array($entities)) {
-				foreach($entities as $oldKey => $entity) {
-					$id = call_user_func_array([$entity, $getter], []);
-					$this->addKeyMapping($mapper->getEntity(), $oldKey, $id);
-				}
-			}
-		}
-		$this->pendingRecords = [];
-	}
+        $this->keyMappings[$entity][$oldKey] = $newKey;
+    }
 }

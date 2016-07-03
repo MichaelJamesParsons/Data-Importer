@@ -7,27 +7,27 @@ namespace michaeljamesparsons\DataImporter\Importers;
  */
 abstract class AbstractImporter
 {
-	/** @var bool */
-	protected $skipRecordOnError;
+    /** @var bool */
+    protected $skipRecordOnError;
 
-	public function __construct()
-	{
-		$this->skipRecordOnError = true;
-	}
+    public function __construct()
+    {
+        $this->skipRecordOnError = true;
+    }
 
-	/**
-	 * @return boolean
-	 */
-	public function skipRecordOnError()
-	{
-		return $this->skipRecordOnError;
-	}
+    /**
+     * @return boolean
+     */
+    public function skipRecordOnError()
+    {
+        return $this->skipRecordOnError;
+    }
 
-	/**
-	 * @param boolean $skipRecordOnError
-	 */
-	public function setSkipRecordOnError($skipRecordOnError)
-	{
-		$this->skipRecordOnError = $skipRecordOnError;
-	}
+    /**
+     * @param boolean $skipRecordOnError
+     */
+    public function setSkipRecordOnError($skipRecordOnError)
+    {
+        $this->skipRecordOnError = $skipRecordOnError;
+    }
 }

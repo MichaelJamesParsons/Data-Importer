@@ -30,30 +30,32 @@ class DatabaseWriter extends AbstractDatabaseWriter
 
         $this->context->persist($entityContext, $record);
 
-        if($this->count != 0 && $this->count % 100 == 0) {
+        if ($this->count != 0 && $this->count % 100 == 0) {
             $this->context->flush();
         }
 
         $this->count++;
     }
 
-    protected function primaryKeysHaveValues(DatabaseEntityContext $context, array $record) {
-        foreach($context->getPrimaryKeyValues($record) as $key => $value) {
-            if(!empty($value)) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    protected function mapItemValuesToRecordKeys(array $item, array $record) {
-        foreach($item as $property => $value) {
-            if(array_key_exists($property, $record)) {
+    protected function mapItemValuesToRecordKeys(array $item, array $record)
+    {
+        foreach ($item as $property => $value) {
+            if (array_key_exists($property, $record)) {
                 $record[$property] = $value;
             }
         }
 
         return $record;
+    }
+
+    protected function primaryKeysHaveValues(DatabaseEntityContext $context, array $record)
+    {
+        foreach ($context->getPrimaryKeyValues($record) as $key => $value) {
+            if (!empty($value)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

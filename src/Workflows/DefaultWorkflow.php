@@ -13,37 +13,40 @@ use michaeljamesparsons\DataImporter\Writers\AbstractWriter;
  */
 class DefaultWorkflow extends AbstractWorkflow
 {
-	/**
-	 * @return Report
-	 * @throws Exception
-	 */
-	public function process() {
+    /**
+     * @return Report
+     * @throws Exception
+     */
+    public function process()
+    {
         $this->reporter->start();
 
-		/** @var AbstractWriter $writer */
-		foreach($this->writers as $writer) {
-			$writer->before();
-			$this->processReaders($writer);
-			$writer->after();
-		}
+        /** @var AbstractWriter $writer */
+        foreach ($this->writers as $writer) {
+            $writer->before();
+            $this->processReaders($writer);
+            $writer->after();
+        }
 
         $this->reporter->stop();
-        return $this->reporter;
-	}
 
-	/**
-	 * @param AbstractWriter $writer
-	 *
-	 * @throws \Exception
-	 */
-	protected function processReaders(AbstractWriter $writer) {
-		/** @var AbstractReader $reader */
-		foreach($this->readers as $reader) {
-            foreach($reader as $item) {
+        return $this->reporter;
+    }
+
+    /**
+     * @param AbstractWriter $writer
+     *
+     * @throws \Exception
+     */
+    protected function processReaders(AbstractWriter $writer)
+    {
+        /** @var AbstractReader $reader */
+        foreach ($this->readers as $reader) {
+            foreach ($reader as $item) {
                 $this->processItem($reader, $writer, $item);
             }
-		}
-	}
+        }
+    }
 
     /**
      * @param AbstractReader $reader
@@ -52,17 +55,18 @@ class DefaultWorkflow extends AbstractWorkflow
      *
      * @throws \Exception
      */
-    protected function processItem(AbstractReader $reader, AbstractWriter $writer, array $item) {
+    protected function processItem(AbstractReader $reader, AbstractWriter $writer, array $item)
+    {
         try {
-            if(!$reader->filter($item)) {
+            if (!$reader->filter($item)) {
                 return;
             }
 
             $writer->write($reader->convert($item));
             $this->reporter->incrementImportCount();
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $this->reporter->incrementErrorCount();
-            if($this->skipRecordOnError) {
+            if ($this->skipRecordOnError) {
                 return;
             }
 

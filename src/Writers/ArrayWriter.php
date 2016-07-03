@@ -12,31 +12,31 @@ use michaeljamesparsons\DataImporter\Cache\AbstractCacheDriver;
  */
 class ArrayWriter extends AbstractWriter
 {
-	/**
-	 * The data collected from the reader.
-	 *
-	 * @var array
-	 */
-	protected $data;
+    /**
+     * The data collected from the reader.
+     *
+     * @var array
+     */
+    protected $data;
 
     /**
      * ArrayWriter constructor.
      *
      * @param AbstractCacheDriver $driver
      */
-	public function __construct(AbstractCacheDriver $driver = null)
-	{
+    public function __construct(AbstractCacheDriver $driver = null)
+    {
         parent::__construct($driver);
-		$this->data = [];
-	}
+        $this->data = [];
+    }
 
-	/**
-	 * Import a single item.
-	 *
-	 * @param array $item - The item to import.
-	 */
-	public function write(array $item)
-	{
-		$this->data[] = $item;
-	}
+    /**
+     * Import a single item.
+     *
+     * @param array $item - The item to import.
+     */
+    public function write(array $item)
+    {
+        $this->data[] = $item;
+    }
 }

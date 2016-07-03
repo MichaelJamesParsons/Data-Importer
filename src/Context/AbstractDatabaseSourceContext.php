@@ -7,13 +7,13 @@ namespace michaeljamesparsons\DataImporter\Context;
  */
 abstract class AbstractDatabaseSourceContext extends AbstractSourceWriterContext
 {
-	/**
-	 * AbstractDatabaseSourceContext constructor.
-	 */
-	public function __construct()
-	{
+    /**
+     * AbstractDatabaseSourceContext constructor.
+     */
+    public function __construct()
+    {
         parent::__construct();
-	}
+    }
 
     /**
      * This is here to provide better IDE auto-complete support.
@@ -27,6 +27,7 @@ abstract class AbstractDatabaseSourceContext extends AbstractSourceWriterContext
     {
         /** @var DatabaseEntityContext $context */
         $context = parent::getEntityContext($name);
+
         return $context;
     }
 
@@ -39,15 +40,16 @@ abstract class AbstractDatabaseSourceContext extends AbstractSourceWriterContext
     }
 
     /**
-	 * Finds an existing database record or creates a new record if it does not already exist.
-	 *
-	 * @param DatabaseEntityContext $context - The context that represents the table or entity.
-	 * @param array $fields                    - A list of key/value pairs, where the key is the name of a table column
-	 *                                           or entity property. The key must exist in the $indexFields array.
-	 *
-	 * @return mixed - Returns an object or an array which represents a record in the database.
-	 */
-	public abstract function findOrCreateIfNotExists(DatabaseEntityContext $context, array $fields);
+     * Finds an existing database record or creates a new record if it does not already exist.
+     *
+     * @param DatabaseEntityContext $context     - The context that represents the table or entity.
+     * @param array                 $fields      - A list of key/value pairs, where the key is the name of a table
+     *                                           column or entity property. The key must exist in the $indexFields
+     *                                           array.
+     *
+     * @return mixed - Returns an object or an array which represents a record in the database.
+     */
+    public abstract function findOrCreateIfNotExists(DatabaseEntityContext $context, array $fields);
 
     /**
      * Turn on database query logging.

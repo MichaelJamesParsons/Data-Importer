@@ -13,351 +13,365 @@ use michaeljamesparsons\DataImporter\Helpers\RecordWrapper;
  * Class DoctrineWriter
  * @package sa\import\writers
  *
- * @todo Implement an ORM context adapter with abstract methods that can be used to get entity/table information.
+ * @todo    Implement an ORM context adapter with abstract methods that can be used to get entity/table information.
  *
- * @todo Use entity manager to fetch entity info instead of using mappers.
- * @todo Move to another library.
- * @todo Move shared logic to parent abstract classes.
+ * @todo    Use entity manager to fetch entity info instead of using mappers.
+ * @todo    Move to another library.
+ * @todo    Move shared logic to parent abstract classes.
  */
 class DoctrineWriter extends AbstractOrmWriter
 {
-	/** @var  array */
-	protected $mappers;
+    /** @var  array */
+    protected $mappers;
 
-	/** @var  array */
-	protected $repositories;
+    /** @var  array */
+    protected $repositories;
 
-	/** @var Configuration  */
-	protected $config;
+    /** @var Configuration */
+    protected $config;
 
-	/** @var  SQLLogger */
-	protected $logger;
+    /** @var  SQLLogger */
+    protected $logger;
 
-	/** @var  string */
-	protected $currentEntity;
+    /** @var  string */
+    protected $currentEntity;
 
-	/** @var  EntityManager */
-	protected $context;
+    /** @var  EntityManager */
+    protected $context;
 
-	/** @var  int */
-	protected $depth;
+    /** @var  int */
+    protected $depth;
 
-	/**
-	 * DoctrineWriter constructor.
-	 *
-	 * @param \Doctrine\ORM\EntityManager $entityManager
-	 * @param int                         $batchSize
-	 */
-	public function __construct(EntityManager $entityManager, $batchSize = 100) {
-		/** @var EntityManager $entityManager */
-		parent::__construct($entityManager, $batchSize);
+    /**
+     * DoctrineWriter constructor.
+     *
+     * @param \Doctrine\ORM\EntityManager $entityManager
+     * @param int                         $batchSize
+     */
+    public function __construct(EntityManager $entityManager, $batchSize = 100)
+    {
+        /** @var EntityManager $entityManager */
+        parent::__construct($entityManager, $batchSize);
 
-		$this->config = $entityManager->getConfiguration();
-		$this->depth = 0;
-		$this->mappers = [];
-	}
+        $this->config  = $entityManager->getConfiguration();
+        $this->depth   = 0;
+        $this->mappers = [];
+    }
 
-	/**
-	 * Import a single item.
-	 *
-	 * @todo This is abstract enough to move to the parent class.
-	 *
-	 * @param array $item - The item to import.
-	 *
-	 * @return mixed
-	 */
-	public function write(array $item)
-	{
-		$this->count++;
-		$wrapper = new RecordWrapper($this->currentEntity, $item, $item[ $this->getMapper()->getPrimaryKey()]);
+    /**
+     * Import a single item.
+     *
+     * @todo This is abstract enough to move to the parent class.
+     *
+     * @param array $item - The item to import.
+     *
+     * @return mixed
+     */
+    public function write(array $item)
+    {
+        $this->count++;
+        $wrapper = new RecordWrapper($this->currentEntity, $item, $item[$this->getMapper()->getPrimaryKey()]);
 
-		$this->findOrCreateIfNotExists($wrapper);
-		$this->mapProperties($wrapper, $this->getMapper());
+        $this->findOrCreateIfNotExists($wrapper);
+        $this->mapProperties($wrapper, $this->getMapper());
 
-		if(!$wrapper->getStoredKey()) {
-			$this->persist($wrapper->getEntity());
-		}
+        if (!$wrapper->getStoredKey()) {
+            $this->persist($wrapper->getEntity());
+        }
 
-		if($this->enableCache && !empty($wrapper->getImportedKey())) {
-			if($wrapper->getStoredKey() != null) {
-				$this->cache->addKeyMapping($this->currentEntity, $wrapper->getImportedKey(), $wrapper->getStoredKey());
-			} else {
-				$this->cache->addPendingEntity(
-					$this->currentEntity,
-					$item[$this->getMapper()->getPrimaryKey()],
-					$wrapper->getEntity()
-				);
-			}
-		}
+        if ($this->enableCache && !empty($wrapper->getImportedKey())) {
+            if ($wrapper->getStoredKey() != null) {
+                $this->cache->addKeyMapping($this->currentEntity, $wrapper->getImportedKey(), $wrapper->getStoredKey());
+            } else {
+                $this->cache->addPendingEntity(
+                    $this->currentEntity,
+                    $item[$this->getMapper()->getPrimaryKey()],
+                    $wrapper->getEntity()
+                );
+            }
+        }
 
-		if($this->count != 0 && ($this->count % $this->bundleSize) == 0 && $this->depth == 0) {
-			$this->flush();
-		}
+        if ($this->count != 0 && ($this->count % $this->bundleSize) == 0 && $this->depth == 0) {
+            $this->flush();
+        }
 
-		return $wrapper->getEntity();
-	}
+        return $wrapper->getEntity();
+    }
 
-	/**
-	 * @param RecordWrapper        $wrapper
-	 * @param EntityMapper $mapper
-	 *
-	 * @return object
-	 */
-	public function mapProperties(RecordWrapper $wrapper, EntityMapper $mapper) {
-		foreach($mapper->getProperties() as $property) {
-			$item = $wrapper->getItem();
+    /**
+     * @return EntityMapper
+     */
+    protected function getMapper()
+    {
+        return $this->mappers[$this->currentEntity];
+    }
 
-			if(array_key_exists($property, $wrapper->getItem())) {
-				if($property == $mapper->getPrimaryKey() && !$mapper->hasImportablePrimaryKey()) {
-					continue;
-				}
+    /**
+     * @inheritdoc
+     *
+     * @todo - Clean up
+     */
+    protected function findOrCreateIfNotExists(RecordWrapper $wrapper)
+    {
+        /** @var array $item */
+        $item = $wrapper->getItem();
 
-				$relationship = $mapper->findRelationship($property);
-				$value = (!$relationship) ? $item[$property] : $this->processRelationship($wrapper, $relationship);
+        /** @var EntityMapper $mapper */
+        $mapper = $this->getMapper();
 
-				if(!empty($value)) {
-					call_user_func_array([
-						$wrapper->getEntity(),
-						$mapper->getPropertySetter($property)
-					], [$value]);
-				}
-			}
-		}
-	}
+        /** @var EntityRepository $repository */
+        $repository = $this->repositories[$this->currentEntity];
 
-	/**
-	 * @param RecordWrapper      $wrapper
-	 * @param EntityRelationship $relationship
-	 *
-	 * @return object
-	 * @throws \Exception
-	 */
-	protected function processRelationship(RecordWrapper $wrapper, EntityRelationship $relationship) {
-		$item  = $wrapper->getItem();
+        /**
+         * Entity is already stored.
+         */
+        if (!empty($wrapper->getStoredKey())) {
+            $entity = $this->context->getReference($this->currentEntity, $wrapper->getStoredKey());
 
-		$value = $item[$relationship->getProperty()];
-		$currentEntity = $this->currentEntity;
+            /**
+             * Find entity by pre-defined fields.
+             *
+             * @todo - potential bug. Check for mapping before using this. Don't allow look-ups by primary key.
+             */
+        } else if (!empty($mapper->getLookupFields())) {
+            $search = [];
+            foreach ($mapper->getLookupFields() as $field) {
+                $search[$field] = $item[$field];
+            }
 
-		$this->setCurrentEntity($relationship->getEntity());
-		$this->depth++;
+            $entity = $repository->findOneBy($search);
 
-		$relatedEntity = null;
-		if(is_array($value)) {
-			$relatedEntity = $this->write($value);
-		} elseif(!empty($value)) {
-			$primaryKey = $this->getMapper()->getPrimaryKey();
+            /**
+             * Check if entity has already been cached.
+             */
+        }
 
-			if(!empty($primaryKey)) {
-				$relatedEntity = $this->write([
-					$primaryKey => $value
-				]);
-			}
-		}
+        if (empty($entity)) {
+            $newKey = $this->cache->findMapping($wrapper->getImportedKey(), $this->currentEntity);
 
-		$this->depth--;
-		$this->setCurrentEntity($currentEntity);
+            if (!is_null($newKey)) {
+                $entity = $this->context->getReference($this->currentEntity, $newKey);
+            }
+        }
 
-		$this->context->persist($relatedEntity);
-		return $relatedEntity;
-	}
+        if (empty($entity)) {
+            $entity = $this->resolveEntityObject($this->currentEntity);
+        }
 
-	/**
-	 * @return EntityMapper
-	 */
-	protected function getMapper() {
-		return $this->mappers[$this->currentEntity];
-	}
+        $wrapper->setStoredKey(call_user_func([$entity, $mapper->getPrimaryKeyGetter()]));
+        $wrapper->setEntity($entity);
+    }
 
-	/**
-	 * @param $entity
-	 *
-	 * @return mixed
-	 */
-	protected function resolveEntityObject($entity) {
-		return new $entity();
-	}
+    /**
+     * @param $entity
+     *
+     * @return mixed
+     */
+    protected function resolveEntityObject($entity)
+    {
+        return new $entity();
+    }
 
-	/**
-	 * @inheritdoc
-	 *
-	 * @todo - Clean up
-	 */
-	protected function findOrCreateIfNotExists(RecordWrapper $wrapper)
-	{
-		/** @var array $item */
-		$item = $wrapper->getItem();
+    /**
+     * @param RecordWrapper $wrapper
+     * @param EntityMapper  $mapper
+     *
+     * @return object
+     */
+    public function mapProperties(RecordWrapper $wrapper, EntityMapper $mapper)
+    {
+        foreach ($mapper->getProperties() as $property) {
+            $item = $wrapper->getItem();
 
-		/** @var EntityMapper $mapper */
-		$mapper = $this->getMapper();
+            if (array_key_exists($property, $wrapper->getItem())) {
+                if ($property == $mapper->getPrimaryKey() && !$mapper->hasImportablePrimaryKey()) {
+                    continue;
+                }
 
-		/** @var EntityRepository $repository */
-		$repository = $this->repositories[$this->currentEntity];
+                $relationship = $mapper->findRelationship($property);
+                $value        = (!$relationship) ? $item[$property] : $this->processRelationship($wrapper,
+                    $relationship);
 
-		/**
-		 * Entity is already stored.
-		 */
-		if(!empty($wrapper->getStoredKey())) {
-			$entity = $this->context->getReference($this->currentEntity, $wrapper->getStoredKey());
+                if (!empty($value)) {
+                    call_user_func_array([
+                        $wrapper->getEntity(),
+                        $mapper->getPropertySetter($property)
+                    ], [$value]);
+                }
+            }
+        }
+    }
 
-		/**
-		 * Find entity by pre-defined fields.
-		 *
-		 * @todo - potential bug. Check for mapping before using this. Don't allow look-ups by primary key.
-		 */
-		} else if(!empty($mapper->getLookupFields())) {
-			$search = [];
-			foreach($mapper->getLookupFields() as $field) {
-				$search[ $field ] = $item[ $field ];
-			}
+    /**
+     * @param RecordWrapper      $wrapper
+     * @param EntityRelationship $relationship
+     *
+     * @return object
+     * @throws \Exception
+     */
+    protected function processRelationship(RecordWrapper $wrapper, EntityRelationship $relationship)
+    {
+        $item = $wrapper->getItem();
 
-			$entity = $repository->findOneBy($search);
+        $value         = $item[$relationship->getProperty()];
+        $currentEntity = $this->currentEntity;
 
-			/**
-			 * Check if entity has already been cached.
-			 */
-		}
+        $this->setCurrentEntity($relationship->getEntity());
+        $this->depth++;
 
-		if(empty($entity)) {
-			$newKey = $this->cache->findMapping($wrapper->getImportedKey(), $this->currentEntity);
+        $relatedEntity = null;
+        if (is_array($value)) {
+            $relatedEntity = $this->write($value);
+        } elseif (!empty($value)) {
+            $primaryKey = $this->getMapper()->getPrimaryKey();
 
-			if(!is_null($newKey)) {
-				$entity = $this->context->getReference($this->currentEntity, $newKey);
-			}
-		}
+            if (!empty($primaryKey)) {
+                $relatedEntity = $this->write([
+                    $primaryKey => $value
+                ]);
+            }
+        }
 
-		if(empty($entity)) {
-			$entity = $this->resolveEntityObject($this->currentEntity);
-		}
+        $this->depth--;
+        $this->setCurrentEntity($currentEntity);
 
-		$wrapper->setStoredKey(call_user_func([$entity, $mapper->getPrimaryKeyGetter()]));
-		$wrapper->setEntity($entity);
-	}
+        $this->context->persist($relatedEntity);
 
-	/**
-	 * @inheritdoc
-	 */
-	protected function persist($entity)
-	{
-		$this->context->persist($entity);
-	}
+        return $relatedEntity;
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function flush() {
-		$this->context->flush();
-		$this->cache->flush($this->mappers);
-		$this->context->clear();
-		$this->count = 0;
-	}
+    /**
+     * @param $entity
+     *
+     * @throws \Exception
+     * @todo Abstract to parent class.
+     */
+    public function setCurrentEntity($entity)
+    {
+        if (!array_key_exists($entity, $this->mappers)) {
+            throw new \Exception("Mapper for entity of type \"{$entity}\" is not defined within writer.");
+        }
 
-	/**
-	 * @inheritdoc
-	 */
-	protected function disableDatabaseLogging()
-	{
-		$this->logger = $this->config->getSQLLogger();
-		$this->config->setSQLLogger(null);
-	}
+        $this->currentEntity = $entity;
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	protected function enableDatabaseLogging()
-	{
-		$this->config->setSQLLogger($this->logger);
-	}
+    /**
+     * @inheritdoc
+     */
+    protected function persist($entity)
+    {
+        $this->context->persist($entity);
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	protected function truncateTable()
-	{
-		// TODO: Implement truncateTables() method.
-	}
+    /**
+     * @inheritdoc
+     */
+    public function flush()
+    {
+        $this->context->flush();
+        $this->cache->flush($this->mappers);
+        $this->context->clear();
+        $this->count = 0;
+    }
 
-	/**
-	 * @param EntityMapper $mapper
-	 *
-	 * @return $this
-	 * @todo Consider moving to another class.
-	 */
-	public function addMapper(EntityMapper $mapper) {
-		$this->mappers[$mapper->getEntity()] = $mapper;
-		return $this;
-	}
+    /**
+     * @param EntityMapper $mapper
+     *
+     * @return $this
+     * @todo Consider moving to another class.
+     */
+    public function addMapper(EntityMapper $mapper)
+    {
+        $this->mappers[$mapper->getEntity()] = $mapper;
 
-	/**
-	 * @param $entity
-	 *
-	 * @throws \Exception
-	 * @todo Abstract to parent class.
-	 */
-	public function setCurrentEntity($entity) {
-		if(!array_key_exists($entity, $this->mappers)) {
-			throw new \Exception("Mapper for entity of type \"{$entity}\" is not defined within writer.");
-		}
+        return $this;
+    }
 
-		$this->currentEntity = $entity;
-	}
+    /**
+     * @inheritdoc
+     */
+    public function before()
+    {
+        parent::before();
+        $this->initializeRepositories();
+        $this->initializeCache();
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function before()
-	{
-		parent::before();
-		$this->initializeRepositories();
-		$this->initializeCache();
-	}
+    /**
+     * Caches the repository for each entity.
+     *
+     * @throws \Exception
+     */
+    protected function initializeRepositories()
+    {
+        /** @var EntityMapper $mapper */
+        foreach ($this->mappers as $mapper) {
+            $this->repositories[$mapper->getEntity()] = $this->findRepository($mapper->getEntity());
+        }
+    }
 
-	/**
-	 * Determines if caching is necessary.
-	 */
-	protected function initializeCache() {
-		if(empty($this->mappers)) {
-			throw new ValidateException("Entity mappers not defined.");
-		}
+    /**
+     * Find the corresponding repository for the given entity.
+     *
+     * @param $entity
+     *
+     * @return \Doctrine\ORM\EntityRepository
+     * @throws \Exception
+     */
+    protected function findRepository($entity)
+    {
+        $repository = $this->context->getRepository($entity);
 
-		/** @var EntityMapper $mapper */
-		foreach($this->mappers as $mapper) {
-			/** @var EntityRelationship $relationship */
-			foreach($mapper->getRelationships() as $relationship) {
-				if(array_key_exists($relationship->getEntity(), $this->mappers)) {
-					$this->enableCache = true;
-					break 2;
-				}
-			}
-		}
-	}
+        if (!$repository) {
+            throw new \Exception("Repository not found for entity {$entity}.");
+        }
 
-	/**
-	 * Caches the repository for each entity.
-	 *
-	 * @throws \Exception
-	 */
-	protected function initializeRepositories() {
-		/** @var EntityMapper $mapper */
-		foreach($this->mappers as $mapper) {
-			$this->repositories[$mapper->getEntity()] = $this->findRepository($mapper->getEntity());
-		}
-	}
+        return $repository;
+    }
 
-	/**
-	 * Find the corresponding repository for the given entity.
-	 *
-	 * @param $entity
-	 *
-	 * @return \Doctrine\ORM\EntityRepository
-	 * @throws \Exception
-	 */
-	protected function findRepository($entity) {
-		$repository = $this->context->getRepository($entity);
+    /**
+     * Determines if caching is necessary.
+     */
+    protected function initializeCache()
+    {
+        if (empty($this->mappers)) {
+            throw new ValidateException("Entity mappers not defined.");
+        }
 
-		if(!$repository) {
-			throw new \Exception("Repository not found for entity {$entity}.");
-		}
+        /** @var EntityMapper $mapper */
+        foreach ($this->mappers as $mapper) {
+            /** @var EntityRelationship $relationship */
+            foreach ($mapper->getRelationships() as $relationship) {
+                if (array_key_exists($relationship->getEntity(), $this->mappers)) {
+                    $this->enableCache = true;
+                    break 2;
+                }
+            }
+        }
+    }
 
-		return $repository;
-	}
+    /**
+     * @inheritdoc
+     */
+    protected function disableDatabaseLogging()
+    {
+        $this->logger = $this->config->getSQLLogger();
+        $this->config->setSQLLogger(null);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function enableDatabaseLogging()
+    {
+        $this->config->setSQLLogger($this->logger);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function truncateTable()
+    {
+        // TODO: Implement truncateTables() method.
+    }
 }

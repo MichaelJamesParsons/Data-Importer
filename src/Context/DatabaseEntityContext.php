@@ -7,23 +7,23 @@ namespace michaeljamesparsons\DataImporter\Context;
  */
 class DatabaseEntityContext extends EntityContext
 {
-	/**
-	 * The primary key of the table or entity. If the table contains composite primary keys, you should include
-	 * all of them in the array of $indexFields to prevent importing duplicates.
-	 *
-	 * @var  string
-	 */
-	protected $primaryKeys;
+    /**
+     * The primary key of the table or entity. If the table contains composite primary keys, you should include
+     * all of them in the array of $indexFields to prevent importing duplicates.
+     *
+     * @var  string
+     */
+    protected $primaryKeys;
 
-	/**
-	 * Determines if the primary key should be included in the import when it is executed.
-	 *
-	 * This value should always be set to true when a table contains composite keys that are not incremental.
-	 *
+    /**
+     * Determines if the primary key should be included in the import when it is executed.
+     *
+     * This value should always be set to true when a table contains composite keys that are not incremental.
+     *
      * @todo - Refactor usage now that composite primary keys are supported.
-	 * @var  bool
-	 */
-	protected $importablePrimaryKey;
+     * @var  bool
+     */
+    protected $importablePrimaryKey;
 
     /**
      * DatabaseEntityContext constructor.
@@ -34,44 +34,37 @@ class DatabaseEntityContext extends EntityContext
      * @param array  $associations
      * @param array  $indexFields
      */
-	public function __construct(
+    public function __construct(
         $name,
         array $primaryKeys,
         array $fields = [],
         array $associations = [],
-        array $indexFields = [])
-	{
-		parent::__construct($name, $fields, $associations, $indexFields);
-		$this->primaryKeys  = $primaryKeys;
+        array $indexFields = []
+    ) {
+        parent::__construct($name, $fields, $associations, $indexFields);
+        $this->primaryKeys          = $primaryKeys;
         $this->importablePrimaryKey = false;
-	}
+    }
 
-	/**
-	 * @return array
-	 */
-	public function getPrimaryKeys()
-	{
-		return $this->primaryKeys;
-	}
+    /**
+     * @return boolean
+     */
+    public function isImportablePrimaryKey()
+    {
+        return $this->importablePrimaryKey;
+    }
 
-	/**
-	 * @return boolean
-	 */
-	public function isImportablePrimaryKey()
-	{
-		return $this->importablePrimaryKey;
-	}
+    /**
+     * @param boolean $importablePrimaryKey
+     *
+     * @return $this
+     */
+    public function setImportablePrimaryKey($importablePrimaryKey)
+    {
+        $this->importablePrimaryKey = $importablePrimaryKey;
 
-	/**
-	 * @param boolean $importablePrimaryKey
-	 *
-	 * @return $this
-	 */
-	public function setImportablePrimaryKey($importablePrimaryKey)
-	{
-		$this->importablePrimaryKey = $importablePrimaryKey;
-		return $this;
-	}
+        return $this;
+    }
 
     /**
      * Maps the values from the item to the primary keys defined in the entity context.
@@ -80,15 +73,24 @@ class DatabaseEntityContext extends EntityContext
      *
      * @return array
      */
-    public function getPrimaryKeyValues(array $item) {
+    public function getPrimaryKeyValues(array $item)
+    {
         $keys = [];
 
-        foreach($this->getPrimaryKeys() as $index) {
-            if(array_key_exists($index, $item)) {
+        foreach ($this->getPrimaryKeys() as $index) {
+            if (array_key_exists($index, $item)) {
                 $keys[$index] = $item[$index];
             }
         }
 
         return $keys;
+    }
+
+    /**
+     * @return array
+     */
+    public function getPrimaryKeys()
+    {
+        return $this->primaryKeys;
     }
 }

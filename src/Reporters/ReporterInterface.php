@@ -9,7 +9,7 @@ interface ReporterInterface
 {
     /**
      * Initializes the reporter's default values.
-     * 
+     *
      * @return void
      */
     public function start();

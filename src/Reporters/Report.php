@@ -9,24 +9,25 @@ use DateTime;
  */
 class Report implements ReporterInterface
 {
-	/** @var  \DateTime */
-	protected $startTime;
+    /** @var  \DateTime */
+    protected $startTime;
 
-	/** @var  \DateTime */
-	protected $endTime;
+    /** @var  \DateTime */
+    protected $endTime;
 
-	/** @var  int */
-	protected $importCount;
+    /** @var  int */
+    protected $importCount;
 
-	/** @var  int */
-	protected $errorCount;
+    /** @var  int */
+    protected $errorCount;
 
     /**
      * @inheritdoc
      */
-    public function start() {
-        $this->startTime = new DateTime('now');
-        $this->endTime   = null;
+    public function start()
+    {
+        $this->startTime   = new DateTime('now');
+        $this->endTime     = null;
         $this->importCount = 0;
         $this->errorCount  = 0;
     }
@@ -42,38 +43,26 @@ class Report implements ReporterInterface
     /**
      * @inheritdoc
      */
-	public function getStartTime()
-	{
-		return $this->startTime;
-	}
-
-    /**
-     * @inheritdoc
-     */
-	public function getEndTime()
-	{
-		return $this->endTime;
-	}
-
-    /**
-     * @inheritdoc
-     */
-    public function getElapsedTime()
+    public function getStartTime()
     {
-        if(!empty($this->endTime) && !empty($this->startTime)) {
-            return null;
-        }
-
-        return $this->endTime->diff($this->startTime);
+        return $this->startTime;
     }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function getImportCount()
-	{
-		return $this->importCount;
-	}
+    /**
+     * @inheritdoc
+     */
+    public function getEndTime()
+    {
+        return $this->endTime;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getImportCount()
+    {
+        return $this->importCount;
+    }
 
     /**
      * @inheritdoc
@@ -83,20 +72,13 @@ class Report implements ReporterInterface
         $this->importCount++;
     }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function getProcessedCount() {
-		return $this->importCount + $this->errorCount;
-	}
-
     /**
      * @inheritdoc
      */
-	public function getErrorCount()
-	{
-		return $this->errorCount;
-	}
+    public function getErrorCount()
+    {
+        return $this->errorCount;
+    }
 
     /**
      * @inheritdoc
@@ -111,14 +93,35 @@ class Report implements ReporterInterface
      *
      * @todo Consider removing.
      */
-	public function toArray() {
-		return [
-			'startTime'      => (!empty($this->startTime)) ? $this->startTime->format('Y-m-d H:m:s') : null,
-			'endTime'        => (!empty($this->endTime)) ? $this->endTime->format('Y-m-d H:m:s') : null,
-			'timeElapsed'    => (!empty($this->getElapsedTime())) ? $this->getElapsedTime()->format('Y-m-d H:m:s') : null,
-			'importCount'    => $this->importCount,
-		    'errorCount'     => $this->errorCount,
-		    'processedCount' => $this->getProcessedCount()
-		];
-	}
+    public function toArray()
+    {
+        return [
+            'startTime'      => (!empty($this->startTime)) ? $this->startTime->format('Y-m-d H:m:s') : null,
+            'endTime'        => (!empty($this->endTime)) ? $this->endTime->format('Y-m-d H:m:s') : null,
+            'timeElapsed'    => (!empty($this->getElapsedTime())) ? $this->getElapsedTime()->format('Y-m-d H:m:s') : null,
+            'importCount'    => $this->importCount,
+            'errorCount'     => $this->errorCount,
+            'processedCount' => $this->getProcessedCount()
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getElapsedTime()
+    {
+        if (!empty($this->endTime) && !empty($this->startTime)) {
+            return null;
+        }
+
+        return $this->endTime->diff($this->startTime);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getProcessedCount()
+    {
+        return $this->importCount + $this->errorCount;
+    }
 }

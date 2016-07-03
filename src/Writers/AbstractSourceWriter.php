@@ -27,10 +27,10 @@ abstract class AbstractSourceWriter extends AbstractWriter implements SourceWrit
      * @param AbstractSourceWriterContext $context
      * @param AbstractCacheDriver         $cache
      */
-    public function __construct(AbstractSourceWriterContext $context ,AbstractCacheDriver $cache = null)
+    public function __construct(AbstractSourceWriterContext $context, AbstractCacheDriver $cache = null)
     {
         $this->context = $context;
-        $this->cache = (!empty($cache)) ? $cache : new DictionaryCacheDriver();
+        $this->cache   = (!empty($cache)) ? $cache : new DictionaryCacheDriver();
 
         /**
          * Caching is disabled by default to optimize the speed and memory usage of this writer. It should
@@ -45,9 +45,12 @@ abstract class AbstractSourceWriter extends AbstractWriter implements SourceWrit
      *
      * @return bool
      */
-    public function isCacheEnabled() {
+    public function isCacheEnabled()
+    {
         return $this->cacheEnabled;
     }
 
-    public function write(array $item, $entity) {}
+    public function write(array $item, $entity)
+    {
+    }
 }

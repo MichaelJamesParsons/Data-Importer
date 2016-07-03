@@ -10,70 +10,75 @@ use michaeljamesparsons\DataImporter\Filters\FilterInterface;
  */
 abstract class AbstractReader implements \Iterator
 {
-	/** @var  array */
-	protected $filters;
+    /** @var  array */
+    protected $filters;
 
-	/** @var  array */
-	protected $converters;
+    /** @var  array */
+    protected $converters;
 
-	public function __construct()
-	{
-		$this->filters    = [];
-		$this->converters = [];
-	}
+    public function __construct()
+    {
+        $this->filters    = [];
+        $this->converters = [];
+    }
 
-	/**
-	 * Adds a filter to the reader's filter queue.
-	 *
-	 * @param FilterInterface $filter
-	 *
-	 * @return $this
-	 */
-	public function addFilter(FilterInterface $filter) {
-		$this->filters[] = $filter;
-		return $this;
-	}
+    /**
+     * Adds a filter to the reader's filter queue.
+     *
+     * @param FilterInterface $filter
+     *
+     * @return $this
+     */
+    public function addFilter(FilterInterface $filter)
+    {
+        $this->filters[] = $filter;
 
-	/**
-	 * Determines if an item meets the requirements to be filtered.
-	 *
-	 * @param array $item
-	 *
-	 * @return bool
-	 */
-	public function filter(array $item) {
-		/** @var FilterInterface $filter */
-		foreach($this->filters as $filter) {
-			if(!$filter->filter($item)) {
-				return false;
-			}
-		}
+        return $this;
+    }
 
-		return true;
-	}
+    /**
+     * Determines if an item meets the requirements to be filtered.
+     *
+     * @param array $item
+     *
+     * @return bool
+     */
+    public function filter(array $item)
+    {
+        /** @var FilterInterface $filter */
+        foreach ($this->filters as $filter) {
+            if (!$filter->filter($item)) {
+                return false;
+            }
+        }
 
-	/**
-	 * @param ConverterInterface $converter
-	 *
-	 * @return $this
-	 */
-	public function addConverter(ConverterInterface $converter)
-	{
-		$this->converters[] = $converter;
-		return $this;
-	}
+        return true;
+    }
 
-	/**
-	 * @param $item
-	 *
-	 * @return array
-	 */
-	public function convert($item) {
-		/** @var ConverterInterface $converter */
-		foreach($this->converters as $converter) {
-			$item = $converter->convert($item);
-		}
+    /**
+     * @param ConverterInterface $converter
+     *
+     * @return $this
+     */
+    public function addConverter(ConverterInterface $converter)
+    {
+        $this->converters[] = $converter;
 
-		return $item;
-	}
+        return $this;
+    }
+
+    /**
+     * @param $item
+     *
+     * @return array
+     */
+    public function convert($item)
+    {
+        /** @var ConverterInterface $converter */
+        foreach ($this->converters as $converter) {
+            $item = $converter->convert($item);
+        }
+
+        return $item;
+    }
 }

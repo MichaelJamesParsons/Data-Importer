@@ -27,7 +27,7 @@ abstract class AbstractDatabaseWriter extends AbstractSourceWriter
 
     /**
      * If true, the database tables will be truncated before executing the import.
-     * 
+     *
      * @var  bool
      */
     protected $truncate;
@@ -42,15 +42,15 @@ abstract class AbstractDatabaseWriter extends AbstractSourceWriter
     public function __construct(
         AbstractDatabaseSourceContext $context,
         $bundleSize = 300,
-        AbstractCacheDriver $cache = null)
-    {
+        AbstractCacheDriver $cache = null
+    ) {
         parent::__construct($context, $cache);
 
         //This is here for IDE code completion purposes.
         /** @var AbstractDatabaseSourceContext context */
-        $this->context = $context;
-        $this->bundleSize  = $bundleSize;
-        $this->count       = 0;
+        $this->context    = $context;
+        $this->bundleSize = $bundleSize;
+        $this->count      = 0;
     }
 
     /**
@@ -95,7 +95,8 @@ abstract class AbstractDatabaseWriter extends AbstractSourceWriter
      *
      * @return array
      */
-    protected function findOrCreateIfNotExists(DatabaseEntityContext $entityContext, array $item) {
+    protected function findOrCreateIfNotExists(DatabaseEntityContext $entityContext, array $item)
+    {
         /**
          * Check if the record has already been imported by its primary keys.
          */
@@ -106,7 +107,7 @@ abstract class AbstractDatabaseWriter extends AbstractSourceWriter
         /**
          * Check if a duplicate record has already been imported by its index fields.
          */
-        if(empty($entity)) {
+        if (empty($entity)) {
             $entity = $this->cache->find(
                 $this->cache->hashDictionary($entityContext->getIndexFieldValues($item))
             );
@@ -117,7 +118,7 @@ abstract class AbstractDatabaseWriter extends AbstractSourceWriter
          *
          * If the index fields are empty, or a duplicate record does not already exist, a new entity will be returned.
          */
-        if(empty($entity)) {
+        if (empty($entity)) {
             $entity = $this->context->findOrCreateIfNotExists($entityContext, $item);
         }
 
@@ -125,7 +126,7 @@ abstract class AbstractDatabaseWriter extends AbstractSourceWriter
          * Record does not exist in cache or database. Create a new object serialized as
          * an associative array.
          */
-        if(empty($entity)) {
+        if (empty($entity)) {
             $entity = $entityContext->createObjectAsArray();
         }
 

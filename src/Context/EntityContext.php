@@ -7,15 +7,15 @@ namespace michaeljamesparsons\DataImporter\Context;
  */
 class EntityContext
 {
-	/**
-	 * The name of the object.
-	 *
-	 * ORM oriented database contexts should provide the fully qualified namespace of the entity they intend to import.
-	 * Contexts that directly interact with the database without an ORM should set this value to the name of the table.
-	 *
-	 * @var  string
-	 */
-	protected $name;
+    /**
+     * The name of the object.
+     *
+     * ORM oriented database contexts should provide the fully qualified namespace of the entity they intend to import.
+     * Contexts that directly interact with the database without an ORM should set this value to the name of the table.
+     *
+     * @var  string
+     */
+    protected $name;
 
     /**
      * The expected fields associated with this entity.
@@ -34,17 +34,17 @@ class EntityContext
      */
     protected $associations;
 
-	/**
-	 * This is a list of fields that can be used to uniquely identify a record. The importer will use these fields
-	 * to check if this record already exists inside of the cache (and database if applicable) before writing it.
-	 *
-	 * When checking the cache, the importer will search for a matching record whose fields contain the exact
-	 * values in ALL of the index fields. When working with database imports, incremental primary keys should NOT
-	 * be included in this list.
-	 *
-	 * @var  array
-	 */
-	protected $indexFields;
+    /**
+     * This is a list of fields that can be used to uniquely identify a record. The importer will use these fields
+     * to check if this record already exists inside of the cache (and database if applicable) before writing it.
+     *
+     * When checking the cache, the importer will search for a matching record whose fields contain the exact
+     * values in ALL of the index fields. When working with database imports, incremental primary keys should NOT
+     * be included in this list.
+     *
+     * @var  array
+     */
+    protected $indexFields;
 
     /**
      * EntityContext constructor.
@@ -54,32 +54,33 @@ class EntityContext
      * @param array  $associations
      * @param array  $indexFields
      */
-	public function __construct($name, array $fields = [], array $associations = [], array $indexFields = [])
-	{
-		$this->name = $name;
-        $this->fields = $fields;
+    public function __construct($name, array $fields = [], array $associations = [], array $indexFields = [])
+    {
+        $this->name         = $name;
+        $this->fields       = $fields;
         $this->associations = $associations;
         $this->indexFields  = $indexFields;
-	}
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getName()
-	{
-		return $this->name;
-	}
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
 
-	/**
-	 * @param string $name
-	 *
-	 * @return $this
-	 */
-	public function setName($name)
-	{
-		$this->name = $name;
-		return $this;
-	}
+    /**
+     * @param string $name
+     *
+     * @return $this
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+
+        return $this;
+    }
 
     /**
      * @return array
@@ -97,6 +98,7 @@ class EntityContext
     public function setFields($fields)
     {
         $this->fields = $fields;
+
         return $this;
     }
 
@@ -116,6 +118,7 @@ class EntityContext
     public function setAssociations($associations)
     {
         $this->associations = $associations;
+
         return $this;
     }
 
@@ -124,39 +127,24 @@ class EntityContext
      *
      * @return $this
      */
-    public function addAssociation(Association $association) {
+    public function addAssociation(Association $association)
+    {
         $this->associations[] = $association;
+
         return $this;
     }
 
-	/**
-	 * @return array
-	 */
-	public function getIndexFields()
-	{
-		return $this->indexFields;
-	}
+    /**
+     * @param $field
+     *
+     * @return $this
+     */
+    public function addIndexField($field)
+    {
+        $this->indexFields[] = $field;
 
-	/**
-	 * @param array $indexFields
-	 *
-	 * @return $this
-	 */
-	public function setIndexFields($indexFields)
-	{
-		$this->indexFields = $indexFields;
-		return $this;
-	}
-
-	/**
-	 * @param $field
-	 *
-	 * @return $this
-	 */
-	public function addIndexField($field) {
-		$this->indexFields[] = $field;
-		return $this;
-	}
+        return $this;
+    }
 
     /**
      * Maps the values from the item to the index fields defined in the entity context.
@@ -165,11 +153,12 @@ class EntityContext
      *
      * @return array
      */
-    public function getIndexFieldValues($item) {
+    public function getIndexFieldValues($item)
+    {
         $indexes = [];
 
-        foreach($this->getIndexFields() as $index) {
-            if(array_key_exists($index, $item) && !empty($item[$index])) {
+        foreach ($this->getIndexFields() as $index) {
+            if (array_key_exists($index, $item) && !empty($item[$index])) {
                 $indexes[$index] = $item[$index];
             }
         }
@@ -178,14 +167,35 @@ class EntityContext
     }
 
     /**
+     * @return array
+     */
+    public function getIndexFields()
+    {
+        return $this->indexFields;
+    }
+
+    /**
+     * @param array $indexFields
+     *
+     * @return $this
+     */
+    public function setIndexFields($indexFields)
+    {
+        $this->indexFields = $indexFields;
+
+        return $this;
+    }
+
+    /**
      * Returns an associative array where the keys are the entity's fields, and the values are null.
      *
      * @return array
      */
-    public function createObjectAsArray() {
+    public function createObjectAsArray()
+    {
         $object = [];
 
-        foreach($this->fields as $field) {
+        foreach ($this->fields as $field) {
             $object[$field] = null;
         }
 

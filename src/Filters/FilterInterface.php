@@ -7,10 +7,10 @@ namespace michaeljamesparsons\DataImporter\Filters;
  */
 interface FilterInterface
 {
-	/**
-	 * @param array $item
-	 *
-	 * @return bool
-	 */
-	public function filter(array $item);
+    /**
+     * @param array $item
+     *
+     * @return bool
+     */
+    public function filter(array $item);
 }

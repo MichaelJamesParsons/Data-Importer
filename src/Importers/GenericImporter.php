@@ -11,52 +11,56 @@ use michaeljamesparsons\DataImporter\Writers\AbstractWriter;
  */
 class GenericImporter extends AbstractImporter
 {
-	/** @var  array */
-	protected $readers;
+    /** @var  array */
+    protected $readers;
 
-	/** @var  array */
-	protected $writers;
+    /** @var  array */
+    protected $writers;
 
-	public function __construct()
-	{
-		parent::__construct();
-		$this->readers = [];
-		$this->writers = [];
-	}
+    public function __construct()
+    {
+        parent::__construct();
+        $this->readers = [];
+        $this->writers = [];
+    }
 
-	/**
-	 * @return array
-	 */
-	public function getReaders()
-	{
-		return $this->readers;
-	}
+    /**
+     * @return array
+     */
+    public function getReaders()
+    {
+        return $this->readers;
+    }
 
-	/**
-	 * @param AbstractReader $reader
-	 *
-	 * @return $this
-	 */
-	public function addReader(AbstractReader $reader) {
-		$this->readers[] = $reader;
-		return $this;
-	}
+    /**
+     * @param AbstractReader $reader
+     *
+     * @return $this
+     */
+    public function addReader(AbstractReader $reader)
+    {
+        $this->readers[] = $reader;
 
-	/**
-	 * @return array
-	 */
-	public function getWriters()
-	{
-		return $this->writers;
-	}
+        return $this;
+    }
 
-	/**
-	 * @param AbstractWriter $writer
-	 *
-	 * @return $this
-	 */
-	public function addWriter(AbstractWriter $writer) {
-		$this->writers[] = $writer;
-		return $this;
-	}
+    /**
+     * @return array
+     */
+    public function getWriters()
+    {
+        return $this->writers;
+    }
+
+    /**
+     * @param AbstractWriter $writer
+     *
+     * @return $this
+     */
+    public function addWriter(AbstractWriter $writer)
+    {
+        $this->writers[] = $writer;
+
+        return $this;
+    }
 }

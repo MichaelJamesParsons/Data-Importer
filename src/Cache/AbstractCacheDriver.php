@@ -34,6 +34,24 @@ abstract class AbstractCacheDriver
     public abstract function find($key);
 
     /**
+     * Hashes an associative array's keys and values.
+     *
+     * @param array $dictionary
+     *
+     * @return string
+     */
+    public function hashDictionary(array $dictionary = [])
+    {
+        $string = '';
+
+        foreach ($dictionary as $key => $value) {
+            $string = "{$key}{$value}";
+        }
+
+        return $this->hashKey($string);
+    }
+
+    /**
      * Generate a hash used to look up values in the cache.
      *
      * @param string $key - A unique key for a given key => value pair.
@@ -43,22 +61,5 @@ abstract class AbstractCacheDriver
     public function hashKey($key)
     {
         return md5($key);
-    }
-
-    /**
-     * Hashes an associative array's keys and values.
-     *
-     * @param array $dictionary
-     *
-     * @return string
-     */
-    public function hashDictionary(array $dictionary = []) {
-        $string = '';
-
-        foreach($dictionary as $key => $value) {
-            $string = "{$key}{$value}";
-        }
-
-        return $this->hashKey($string);
     }
 }
