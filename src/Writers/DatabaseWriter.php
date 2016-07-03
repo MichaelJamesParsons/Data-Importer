@@ -19,9 +19,11 @@ class DatabaseWriter extends AbstractDatabaseWriter
      */
     public function write(array $item, $entity)
     {
+        /** @var DatabaseEntityContext $entityContext */
         $entityContext = $this->context->getEntityContext($entity);
+
+        /** @var array $record */
         $record = $this->mapItemValuesToRecordKeys(
-            $entityContext,
             $item,
             $this->findOrCreateIfNotExists($entityContext, $item)
         );
@@ -45,7 +47,7 @@ class DatabaseWriter extends AbstractDatabaseWriter
         return true;
     }
 
-    protected function mapItemValuesToRecordKeys(DatabaseEntityContext $context, array $item, array $record) {
+    protected function mapItemValuesToRecordKeys(array $item, array $record) {
         foreach($item as $property => $value) {
             if(array_key_exists($property, $record)) {
                 $record[$property] = $value;

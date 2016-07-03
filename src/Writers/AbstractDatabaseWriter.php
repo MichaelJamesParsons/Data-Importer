@@ -47,6 +47,7 @@ abstract class AbstractDatabaseWriter extends AbstractSourceWriter
         parent::__construct($context, $cache);
 
         //This is here for IDE code completion purposes.
+        /** @var AbstractDatabaseSourceContext context */
         $this->context = $context;
         $this->bundleSize  = $bundleSize;
         $this->count       = 0;
