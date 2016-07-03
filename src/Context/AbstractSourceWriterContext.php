@@ -33,7 +33,6 @@ class AbstractSourceWriterContext
      * @throws Exception
      */
     public function getEntityContext($name) {
-        /** @var EntityContext $context */
         foreach($this->entities as $context) {
             if($context->getName() == $name) {
                 return $context;

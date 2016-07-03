@@ -4,12 +4,13 @@ namespace michaeljamesparsons\DataImporter\Writers;
 use michaeljamesparsons\DataImporter\Cache\AbstractCacheDriver;
 use michaeljamesparsons\DataImporter\Cache\Drivers\DictionaryCacheDriver;
 use michaeljamesparsons\DataImporter\Context\AbstractSourceWriterContext;
+use michaeljamesparsons\DataImporter\Context\EntityContext;
 
 /**
  * Class AbstractSourceWriter
  * @package michaeljamesparsons\DataImporter\Writers
  */
-abstract class AbstractSourceWriter extends AbstractWriter
+abstract class AbstractSourceWriter extends AbstractWriter implements SourceWriterInterface
 {
     /** @var  AbstractCacheDriver */
     protected $cache;
@@ -47,4 +48,6 @@ abstract class AbstractSourceWriter extends AbstractWriter
     public function isCacheEnabled() {
         return $this->cacheEnabled;
     }
+
+    public function write(array $item, $entity) {}
 }

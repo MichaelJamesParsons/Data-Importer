@@ -18,6 +18,13 @@ class EntityContext
 	protected $name;
 
     /**
+     * The expected fields associated with this entity.
+     *
+     * @var array
+     */
+    protected $fields;
+
+    /**
      * A list of foreign key relationships.
      *
      * These relationships must be defined in order to import records that are related to each other in a
@@ -39,14 +46,20 @@ class EntityContext
 	 */
 	protected $indexFields;
 
-	/**
-	 * EntityContext constructor.
-	 *
-	 * @param $name
-	 */
-	public function __construct($name)
+    /**
+     * EntityContext constructor.
+     *
+     * @param string $name
+     * @param array  $fields
+     * @param array  $associations
+     * @param array  $indexFields
+     */
+	public function __construct($name, array $fields = [], array $associations = [], array $indexFields = [])
 	{
 		$this->name = $name;
+        $this->fields = $fields;
+        $this->associations = $associations;
+        $this->indexFields  = $indexFields;
 	}
 
 	/**
@@ -67,6 +80,25 @@ class EntityContext
 		$this->name = $name;
 		return $this;
 	}
+
+    /**
+     * @return array
+     */
+    public function getFields()
+    {
+        return $this->fields;
+    }
+
+    /**
+     * @param array $fields
+     *
+     * @return $this
+     */
+    public function setFields($fields)
+    {
+        $this->fields = $fields;
+        return $this;
+    }
 
     /**
      * @return array
@@ -125,4 +157,38 @@ class EntityContext
 		$this->indexFields[] = $field;
 		return $this;
 	}
+
+    /**
+     * Maps the values from the item to the index fields defined in the entity context.
+     *
+     * @param array $item
+     *
+     * @return array
+     */
+    public function getIndexFieldValues($item) {
+        $indexes = [];
+
+        foreach($this->getIndexFields() as $index) {
+            if(array_key_exists($index, $item) && !empty($item[$index])) {
+                $indexes[$index] = $item[$index];
+            }
+        }
+
+        return $indexes;
+    }
+
+    /**
+     * Returns an associative array where the keys are the entity's fields, and the values are null.
+     *
+     * @return array
+     */
+    public function createObjectAsArray() {
+        $object = [];
+
+        foreach($this->fields as $field) {
+            $object[$field] = null;
+        }
+
+        return $object;
+    }
 }

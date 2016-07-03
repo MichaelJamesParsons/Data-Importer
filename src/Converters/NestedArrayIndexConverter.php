@@ -5,7 +5,7 @@ namespace michaeljamesparsons\DataImporter\Converters;
  * Class NestedArrayIndexConverterInterface
  * @package michaeljamesparsons\DataImporter\Converters
  */
-class NestedArrayIndexConverterInterface implements ConverterInterface
+class NestedArrayIndexConverter implements ConverterInterface
 {
 	/** @var  string */
 	protected $mapping;

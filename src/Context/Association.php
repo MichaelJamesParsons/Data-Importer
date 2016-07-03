@@ -21,7 +21,21 @@ class Association
 	/** @var  string */
 	protected $type;
 
-	/**
+    /**
+     * Association constructor.
+     *
+     * @param      $sourceProperty
+     * @param      $targetObject
+     * @param null $type
+     */
+    public function __construct($sourceProperty, $targetObject, $type = null)
+    {
+        $this->targetObject = $targetObject;
+        $this->sourceProperty = $sourceProperty;
+        $this->type = $type;
+    }
+
+    /**
 	 * @return string
 	 */
 	public function getSourceProperty()

@@ -5,7 +5,7 @@ namespace michaeljamesparsons\DataImporter\Converters;
  * Class WhitespaceTrimConverterInterface
  * @package michaeljamesparsons\DataImporter\Converters
  */
-class WhitespaceTrimConverterInterface implements ConverterInterface
+class WhitespaceTrimConverter implements ConverterInterface
 {
 	/** @var  array */
 	protected $indexes;

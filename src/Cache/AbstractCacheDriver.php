@@ -40,8 +40,25 @@ abstract class AbstractCacheDriver
      *
      * @return string
      */
-    protected function hashKey($key)
+    public function hashKey($key)
     {
         return md5($key);
+    }
+
+    /**
+     * Hashes an associative array's keys and values.
+     *
+     * @param array $dictionary
+     *
+     * @return string
+     */
+    public function hashDictionary(array $dictionary = []) {
+        $string = '';
+
+        foreach($dictionary as $key => $value) {
+            $string = "{$key}{$value}";
+        }
+
+        return $this->hashKey($string);
     }
 }

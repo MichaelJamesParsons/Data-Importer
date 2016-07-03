@@ -5,7 +5,7 @@ namespace michaeljamesparsons\DataImporter\Converters;
  * Class IndexConverterInterface
  * @package michaeljamesparsons\DataImporter\Converters
  */
-class IndexConverterInterface implements ConverterInterface
+class IndexConverter implements ConverterInterface
 {
 	/** @var  string */
 	protected $index;

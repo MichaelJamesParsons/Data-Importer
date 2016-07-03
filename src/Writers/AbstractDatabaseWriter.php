@@ -2,7 +2,8 @@
 namespace michaeljamesparsons\DataImporter\Writers;
 
 use michaeljamesparsons\DataImporter\Cache\AbstractCacheDriver;
-use michaeljamesparsons\DataImporter\Context\AbstractDatabaseContext;
+use michaeljamesparsons\DataImporter\Context\AbstractDatabaseSourceContext;
+use michaeljamesparsons\DataImporter\Context\DatabaseEntityContext;
 
 /**
  * Class AbstractDatabaseWriter
@@ -34,11 +35,14 @@ abstract class AbstractDatabaseWriter extends AbstractSourceWriter
     /**
      * AbstractDatabaseWriter constructor.
      *
-     * @param AbstractDatabaseContext $context
-     * @param AbstractCacheDriver     $cache
-     * @param int                     $bundleSize
+     * @param AbstractDatabaseSourceContext $context
+     * @param int                           $bundleSize
+     * @param AbstractCacheDriver           $cache
      */
-    public function __construct(AbstractDatabaseContext $context, AbstractCacheDriver $cache = null, $bundleSize = 300)
+    public function __construct(
+        AbstractDatabaseSourceContext $context,
+        $bundleSize = 300,
+        AbstractCacheDriver $cache = null)
     {
         parent::__construct($context, $cache);
 
@@ -85,9 +89,45 @@ abstract class AbstractDatabaseWriter extends AbstractSourceWriter
     /**
      * Fetch an existing record or create a new one if it does not already exist.
      *
-     * @param $item
+     * @param DatabaseEntityContext $entityContext
+     * @param array                 $item
      *
-     * @return object - The record or entity.
+     * @return array
      */
-    protected abstract function findOrCreateIfNotExists($item);
+    protected function findOrCreateIfNotExists(DatabaseEntityContext $entityContext, array $item) {
+        /**
+         * Check if the record has already been imported by its primary keys.
+         */
+        $entity = $this->cache->find(
+            $this->cache->hashDictionary($entityContext->getPrimaryKeyValues($item))
+        );
+
+        /**
+         * Check if a duplicate record has already been imported by its index fields.
+         */
+        if(empty($entity)) {
+            $entity = $this->cache->find(
+                $this->cache->hashDictionary($entityContext->getIndexFieldValues($item))
+            );
+        }
+
+        /**
+         * The record is not in the cache. Check if a duplicate exists in the database.
+         *
+         * If the index fields are empty, or a duplicate record does not already exist, a new entity will be returned.
+         */
+        if(empty($entity)) {
+            $entity = $this->context->findOrCreateIfNotExists($entityContext, $item);
+        }
+
+        /**
+         * Record does not exist in cache or database. Create a new object serialized as
+         * an associative array.
+         */
+        if(empty($entity)) {
+            $entity = $entityContext->createObjectAsArray();
+        }
+
+        return $entity;
+    }
 }

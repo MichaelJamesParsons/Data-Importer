@@ -5,7 +5,7 @@ namespace michaeljamesparsons\DataImporter\Converters;
  * Class ValueToDateTimeConverterInterface
  * @package michaeljamesparsons\DataImporter\Converters
  */
-class ValueToDateTimeConverterInterface implements ConverterInterface
+class ValueToDateTimeConverter implements ConverterInterface
 {
 	/** @var  string */
 	protected $index;
@@ -32,9 +32,11 @@ class ValueToDateTimeConverterInterface implements ConverterInterface
 	{
 		$value = trim($item[$this->index]);
 
-		if(!empty($value)) {
+		if(!empty($value) && \DateTime::createFromFormat('Y-m-d', $value) !== false) {
 			$item[$this->index] = new \DateTime($value, $this->timezone);
-		}
+		} else {
+            $item[$this->index] = null;
+        }
 
 		return $item;
 	}

@@ -2,18 +2,33 @@
 namespace michaeljamesparsons\DataImporter\Context;
 
 /**
- * Class AbstractDatabaseContext
+ * Class AbstractDatabaseSourceContext
  * @package michaeljamesparsons\DataImporter\Context
  */
-abstract class AbstractDatabaseContext extends AbstractSourceWriterContext
+abstract class AbstractDatabaseSourceContext extends AbstractSourceWriterContext
 {
 	/**
-	 * AbstractDatabaseContext constructor.
+	 * AbstractDatabaseSourceContext constructor.
 	 */
 	public function __construct()
 	{
         parent::__construct();
 	}
+
+    /**
+     * This is here to provide better IDE auto-complete support.
+     *
+     * @param $name
+     *
+     * @return DatabaseEntityContext
+     * @throws \Exception
+     */
+    public function getEntityContext($name)
+    {
+        /** @var DatabaseEntityContext $context */
+        $context = parent::getEntityContext($name);
+        return $context;
+    }
 
     /**
      * @inheritdoc
@@ -52,9 +67,12 @@ abstract class AbstractDatabaseContext extends AbstractSourceWriterContext
     /**
      * Add parsed item to the bundle to be saved.
      *
-     * @param $item - The record or entity to be persisted.
+     * @param EntityContext $context
+     * @param array         $record - The record or entity to be persisted.
+     *
+     * @return
      */
-    public abstract function persist($item);
+    public abstract function persist(EntityContext $context, array $record);
 
     /**
      * Save a bundle of records.

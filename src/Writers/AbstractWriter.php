@@ -12,7 +12,7 @@ abstract class AbstractWriter
 	 *
 	 * @param array $item   - The item to import.
 	 */
-	public abstract function write(array $item);
+	public function write(array $item) {}
 
 	/**
 	 * Prepare writer before the import begins.

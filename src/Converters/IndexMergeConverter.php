@@ -7,7 +7,7 @@ namespace michaeljamesparsons\DataImporter\Converters;
  *
  * Merges the values of 1-n indexes into a single new index.
  */
-class IndexMergeConverterInterface implements ConverterInterface
+class IndexMergeConverter implements ConverterInterface
 {
 	/** @var  array */
 	protected $indexes;

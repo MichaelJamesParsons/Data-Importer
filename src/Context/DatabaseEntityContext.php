@@ -13,51 +13,45 @@ class DatabaseEntityContext extends EntityContext
 	 *
 	 * @var  string
 	 */
-	protected $primaryKey;
+	protected $primaryKeys;
 
 	/**
 	 * Determines if the primary key should be included in the import when it is executed.
 	 *
 	 * This value should always be set to true when a table contains composite keys that are not incremental.
 	 *
+     * @todo - Refactor usage now that composite primary keys are supported.
 	 * @var  bool
 	 */
 	protected $importablePrimaryKey;
 
-	/**
-	 * DatabaseEntityContext constructor.
-	 *
-	 * @param string $name
-	 * @param string $primaryKey
-	 * @param array  $foreignKeys
-	 * @param array  $indexFields
-	 */
-	public function __construct($name, $primaryKey, array $foreignKeys = [], array $indexFields = [])
+    /**
+     * DatabaseEntityContext constructor.
+     *
+     * @param string $name
+     * @param array  $primaryKeys
+     * @param array  $fields
+     * @param array  $associations
+     * @param array  $indexFields
+     */
+	public function __construct(
+        $name,
+        array $primaryKeys,
+        array $fields = [],
+        array $associations = [],
+        array $indexFields = [])
 	{
-		parent::__construct($name);
-
-		$this->primaryKey   = $primaryKey;
-		$this->associations = $foreignKeys;
-		$this->indexFields  = $indexFields;
+		parent::__construct($name, $fields, $associations, $indexFields);
+		$this->primaryKeys  = $primaryKeys;
+        $this->importablePrimaryKey = false;
 	}
 
 	/**
-	 * @return string
+	 * @return array
 	 */
-	public function getPrimaryKey()
+	public function getPrimaryKeys()
 	{
-		return $this->primaryKey;
-	}
-
-	/**
-	 * @param string $primaryKey
-	 *
-	 * @return $this
-	 */
-	public function setPrimaryKey($primaryKey)
-	{
-		$this->primaryKey = $primaryKey;
-		return $this;
+		return $this->primaryKeys;
 	}
 
 	/**
@@ -78,4 +72,23 @@ class DatabaseEntityContext extends EntityContext
 		$this->importablePrimaryKey = $importablePrimaryKey;
 		return $this;
 	}
+
+    /**
+     * Maps the values from the item to the primary keys defined in the entity context.
+     *
+     * @param array $item
+     *
+     * @return array
+     */
+    public function getPrimaryKeyValues(array $item) {
+        $keys = [];
+
+        foreach($this->getPrimaryKeys() as $index) {
+            if(array_key_exists($index, $item)) {
+                $keys[$index] = $item[$index];
+            }
+        }
+
+        return $keys;
+    }
 }
