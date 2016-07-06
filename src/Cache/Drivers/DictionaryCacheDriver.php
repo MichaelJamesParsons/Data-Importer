@@ -23,24 +23,36 @@ class DictionaryCacheDriver extends AbstractCacheDriver
     /**
      * @inheritdoc
      */
-    public function add($key, $value)
+    public function add($name, $key, $value)
     {
+        if(!array_key_exists($name, $this->cache)) {
+            $this->cache[$name] = [];
+        }
+
         $this->cache[$this->hashKey($key)] = $value;
     }
 
     /**
      * @inheritdoc
      */
-    public function remove($key)
+    public function update($name, $key, $value)
     {
-        unset($this->cache[$this->hashKey($key)]);
+        $this->cache[$name][$key] = $value;
     }
 
     /**
      * @inheritdoc
      */
-    public function find($key)
+    public function remove($name, $key)
     {
-        return $this->cache[$this->hashKey($key)];
+        unset($this->cache[$name][$this->hashKey($key)]);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function find($name, $key)
+    {
+        return $this->cache[$name][$this->hashKey($key)];
     }
 }
