@@ -1,14 +1,27 @@
 <?php
 namespace michaeljamesparsons\DataImporter\Writers;
 
+use michaeljamesparsons\DataImporter\Cache\AbstractCacheDriver;
+use michaeljamesparsons\DataImporter\Context\AbstractDatabaseSourceContext;
 use michaeljamesparsons\DataImporter\Context\DatabaseEntityContext;
 
 /**
  * Class DatabaseWriter
  * @package michaeljamesparsons\DataImporter\Writers
+ *
+ * @todo - Refactor database entity caching to handle only a single incremental ID. Composite keys don't need to be stored.
  */
 class DatabaseWriter extends AbstractDatabaseWriter
 {
+    public function __construct(AbstractDatabaseSourceContext $context, $bundleSize, AbstractCacheDriver $cache = null
+    ) {
+        parent::__construct($context, $bundleSize, $cache);
+
+        //This is here for IDE code completion purposes.
+        /** @var AbstractDatabaseSourceContext context */
+        $this->context = $context;
+    }
+
     /**
      * Import a single item.
      *
@@ -28,10 +41,10 @@ class DatabaseWriter extends AbstractDatabaseWriter
             $this->findOrCreateIfNotExists($entityContext, $item)
         );
 
-        $this->context->persist($entityContext, $record);
+        $this->persist($entityContext, $record);
 
         if ($this->count != 0 && $this->count % 100 == 0) {
-            $this->context->flush();
+            $this->flush();
         }
 
         $this->count++;
@@ -57,5 +70,21 @@ class DatabaseWriter extends AbstractDatabaseWriter
         }
 
         return true;
+    }
+
+    protected function persist(DatabaseEntityContext $context, array $record) {
+        $this->context->persist($context, $record);
+        $key = implode('-', $context->getPrimaryKeyValues($record));
+        $this->cache->add($context->getName(), $key, null);
+    }
+
+    protected function flush() {
+        $savedEntities = $this->context->flush();
+
+        foreach($savedEntities as $name => $keys) {
+            foreach($keys as $old => $new) {
+                $this->cache->update($name, $old, $new);
+            }
+        }
     }
 }

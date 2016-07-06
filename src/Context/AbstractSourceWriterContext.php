@@ -60,7 +60,7 @@ class AbstractSourceWriterContext
             }
         }
 
-        throw new Exception('Entity context "' . $name . '" not defined in database context.');
+        throw new Exception('Entity context for "' . $name . '" not defined in database context.');
     }
 
     /**

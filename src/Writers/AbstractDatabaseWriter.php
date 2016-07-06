@@ -101,6 +101,7 @@ abstract class AbstractDatabaseWriter extends AbstractSourceWriter
          * Check if the record has already been imported by its primary keys.
          */
         $entity = $this->cache->find(
+            $entityContext->getName(),
             $this->cache->hashDictionary($entityContext->getPrimaryKeyValues($item))
         );
 
@@ -109,6 +110,7 @@ abstract class AbstractDatabaseWriter extends AbstractSourceWriter
          */
         if (empty($entity)) {
             $entity = $this->cache->find(
+                $entityContext->getName(),
                 $this->cache->hashDictionary($entityContext->getIndexFieldValues($item))
             );
         }
