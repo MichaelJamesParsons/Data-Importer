@@ -13,7 +13,7 @@ class DatabaseEntityContext extends EntityContext
      *
      * @var  string
      */
-    protected $primaryKeys;
+    protected $primaryKey;
 
     /**
      * Determines if the primary key should be included in the import when it is executed.
@@ -42,7 +42,7 @@ class DatabaseEntityContext extends EntityContext
         array $indexFields = []
     ) {
         parent::__construct($name, $fields, $associations, $indexFields);
-        $this->primaryKeys          = $primaryKeys;
+        $this->primaryKey           = $primaryKeys;
         $this->importablePrimaryKey = false;
     }
 
@@ -77,7 +77,7 @@ class DatabaseEntityContext extends EntityContext
     {
         $keys = [];
 
-        foreach ($this->getPrimaryKeys() as $index) {
+        foreach ($this->getPrimaryKey() as $index) {
             if (array_key_exists($index, $item)) {
                 $keys[$index] = $item[$index];
             }
@@ -87,10 +87,10 @@ class DatabaseEntityContext extends EntityContext
     }
 
     /**
-     * @return array
+     * @return string
      */
-    public function getPrimaryKeys()
+    public function getPrimaryKey()
     {
-        return $this->primaryKeys;
+        return $this->primaryKey;
     }
 }

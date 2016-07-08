@@ -22,7 +22,7 @@ class WhitespaceTrimConverter implements ConverterInterface
     {
         foreach ($this->indexes as $index) {
             if (!empty($item[$index])) {
-                $item[$index] = preg_replace('/\n/', '', trim($item[$index]));
+                $item[$index] = preg_replace('/n/', '', trim($item[$index]));
             }
         }
 

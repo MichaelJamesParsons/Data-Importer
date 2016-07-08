@@ -43,7 +43,7 @@ class DatabaseWriter extends AbstractDatabaseWriter
 
         $this->persist($entityContext, $record);
 
-        if ($this->count != 0 && $this->count % 100 == 0) {
+        if (true || $this->count != 0 && $this->count % 100 == 0) {
             $this->flush();
         }
 
@@ -61,6 +61,13 @@ class DatabaseWriter extends AbstractDatabaseWriter
         return $record;
     }
 
+    /**
+     * @param \michaeljamesparsons\DataImporter\Context\DatabaseEntityContext $context
+     * @param array                                                           $record
+     *
+     * @return bool
+     * @deprecated
+     */
     protected function primaryKeysHaveValues(DatabaseEntityContext $context, array $record)
     {
         foreach ($context->getPrimaryKeyValues($record) as $key => $value) {
@@ -74,8 +81,7 @@ class DatabaseWriter extends AbstractDatabaseWriter
 
     protected function persist(DatabaseEntityContext $context, array $record) {
         $this->context->persist($context, $record);
-        $key = implode('-', $context->getPrimaryKeyValues($record));
-        $this->cache->add($context->getName(), $key, null);
+        $this->cache->add($context->getName(), $record[$context->getPrimaryKey()], null);
     }
 
     protected function flush() {

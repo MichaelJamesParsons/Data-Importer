@@ -102,7 +102,7 @@ abstract class AbstractDatabaseWriter extends AbstractSourceWriter
          */
         $entity = $this->cache->find(
             $entityContext->getName(),
-            $this->cache->hashDictionary($entityContext->getPrimaryKeyValues($item))
+            $item[$entityContext->getPrimaryKey()]
         );
 
         /**
