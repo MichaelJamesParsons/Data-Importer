@@ -89,19 +89,25 @@ abstract class AbstractWorkflow implements LoggerAwareInterface
     }
 
     /**
-     * @inheritdoc
+     * @param LoggerInterface $logger
+     * @return $this
      */
     public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
+        
+        return $this;
     }
 
     /**
      * @param ReporterInterface $reporter
+     * @return $this
      */
     public function setReporter(ReporterInterface $reporter)
     {
         $this->reporter = $reporter;
+        
+        return $this;
     }
 
     /**
