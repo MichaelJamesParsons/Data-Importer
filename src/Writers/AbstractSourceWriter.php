@@ -4,7 +4,6 @@ namespace michaeljamesparsons\DataImporter\Writers;
 use michaeljamesparsons\DataImporter\Cache\AbstractCacheDriver;
 use michaeljamesparsons\DataImporter\Cache\Drivers\DictionaryCacheDriver;
 use michaeljamesparsons\DataImporter\Context\AbstractSourceWriterContext;
-use michaeljamesparsons\DataImporter\Context\EntityContext;
 
 /**
  * Class AbstractSourceWriter
