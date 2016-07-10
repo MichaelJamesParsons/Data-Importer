@@ -3,7 +3,6 @@ namespace michaeljamesparsons\DataImporter\Workflows;
 
 use michaeljamesparsons\DataImporter\Readers\AbstractReader;
 use michaeljamesparsons\DataImporter\Writers\AbstractSourceWriter;
-use michaeljamesparsons\DataImporter\Writers\AbstractWriter;
 
 /**
  * Class SourceWorkflow
