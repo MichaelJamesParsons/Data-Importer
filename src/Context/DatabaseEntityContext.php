@@ -20,7 +20,7 @@ class DatabaseEntityContext extends EntityContext
      *
      * This value should always be set to true when a table contains composite keys that are not incremental.
      *
-     * @todo - Refactor usage now that composite primary keys are supported.
+     * @todo - Consider removing now that only incremental keys are stored in $primaryKey.
      * @var  bool
      */
     protected $importablePrimaryKey;
@@ -29,20 +29,20 @@ class DatabaseEntityContext extends EntityContext
      * DatabaseEntityContext constructor.
      *
      * @param string $name
-     * @param array  $primaryKeys
+     * @param string $incrementalPrimaryKey
      * @param array  $fields
      * @param array  $associations
      * @param array  $indexFields
      */
     public function __construct(
         $name,
-        array $primaryKeys,
+        $incrementalPrimaryKey = null,
         array $fields = [],
         array $associations = [],
         array $indexFields = []
     ) {
         parent::__construct($name, $fields, $associations, $indexFields);
-        $this->primaryKey           = $primaryKeys;
+        $this->primaryKey           = $incrementalPrimaryKey;
         $this->importablePrimaryKey = false;
     }
 
@@ -67,23 +67,17 @@ class DatabaseEntityContext extends EntityContext
     }
 
     /**
-     * Maps the values from the item to the primary keys defined in the entity context.
+     * Returns the value of the item's incremental primary key.
+     *
+     * If the item entity does not have an incremental primary key, a null value will be returned.
      *
      * @param array $item
      *
      * @return array
      */
-    public function getPrimaryKeyValues(array $item)
+    public function getPrimaryKeyValue(array $item)
     {
-        $keys = [];
-
-        foreach ($this->getPrimaryKey() as $index) {
-            if (array_key_exists($index, $item)) {
-                $keys[$index] = $item[$index];
-            }
-        }
-
-        return $keys;
+        return (array_key_exists($this->getPrimaryKey(), $item)) ? $item[$this->primaryKey] : null;
     }
 
     /**

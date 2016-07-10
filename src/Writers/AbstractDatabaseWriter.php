@@ -90,38 +90,39 @@ abstract class AbstractDatabaseWriter extends AbstractSourceWriter
     /**
      * Fetch an existing record or create a new one if it does not already exist.
      *
-     * @param DatabaseEntityContext $entityContext
+     * @param DatabaseEntityContext $context
      * @param array                 $item
      *
      * @return array
      */
-    protected function findOrCreateIfNotExists(DatabaseEntityContext $entityContext, array $item)
+    protected function findOrCreateIfNotExists(DatabaseEntityContext $context, array $item)
     {
-        /**
-         * Check if the record has already been imported by its primary keys.
-         */
-        $entity = $this->cache->find(
-            $entityContext->getName(),
-            $item[$entityContext->getPrimaryKey()]
-        );
-
-        /**
-         * Check if a duplicate record has already been imported by its index fields.
-         */
-        if (empty($entity)) {
+        $entity = null;
+        if($context->canCheckForDuplicates()) {
+            /**
+             * Check if the record has already been imported by its primary key.
+             */
             $entity = $this->cache->find(
-                $entityContext->getName(),
-                $this->cache->hashDictionary($entityContext->getIndexFieldValues($item))
+                $context->getName(),
+                $item[$context->getPrimaryKey()]
             );
-        }
 
-        /**
-         * The record is not in the cache. Check if a duplicate exists in the database.
-         *
-         * If the index fields are empty, or a duplicate record does not already exist, a new entity will be returned.
-         */
-        if (empty($entity)) {
-            $entity = $this->context->findOrCreateIfNotExists($entityContext, $item);
+            /**
+             * The record is not in the cache. Check if a duplicate exists in the database.
+             *
+             * If the index fields are empty, or a duplicate record does not already exist, a new entity will be returned.
+             */
+            if (empty($entity)) {
+                $entity = $this->context->findOrCreateIfNotExists($context, $item);
+
+                if(!empty($entity)) {
+                    $this->cache->add(
+                        $context->getName(),
+                        $item[$context->getPrimaryKey()],
+                        $entity[$context->getPrimaryKey()]
+                    );
+                }
+            }
         }
 
         /**
@@ -129,7 +130,7 @@ abstract class AbstractDatabaseWriter extends AbstractSourceWriter
          * an associative array.
          */
         if (empty($entity)) {
-            $entity = $entityContext->createObjectAsArray();
+            $entity = $context->createObjectAsArray();
         }
 
         return $entity;

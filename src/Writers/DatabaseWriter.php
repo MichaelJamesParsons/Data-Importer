@@ -62,15 +62,15 @@ class DatabaseWriter extends AbstractDatabaseWriter
     }
 
     /**
-     * @param \michaeljamesparsons\DataImporter\Context\DatabaseEntityContext $context
-     * @param array                                                           $record
+     * @param DatabaseEntityContext $context
+     * @param array                 $record
      *
      * @return bool
      * @deprecated
      */
     protected function primaryKeysHaveValues(DatabaseEntityContext $context, array $record)
     {
-        foreach ($context->getPrimaryKeyValues($record) as $key => $value) {
+        foreach ($context->getPrimaryKeyValue($record) as $key => $value) {
             if (!empty($value)) {
                 return false;
             }
