@@ -25,12 +25,11 @@ class EntityContext
     protected $fields;
 
     /**
-     * A list of foreign key relationships.
+     * A list of Association object which define the entity's foreign key relationships.
      *
-     * These relationships must be defined in order to import records that are related to each other in a
-     * single import.
+     * These relationships must be defined in order to import relationships between multiple entities.
      *
-     * @var  array
+     * @var  Association[]
      */
     protected $associations;
 
@@ -47,6 +46,41 @@ class EntityContext
     protected $indexFields;
 
     /**
+     * If true, the import will check if a duplicate record already exists.
+     *
+     * See the $canUpdateDuplicates property below to determine what happens when a duplicate is found.
+     *
+     * Default: true
+     *
+     * @var bool
+     */
+    protected $canCheckForDuplicates;
+
+    /**
+     * If true, when an existing record is found, the import will update that record with the values found in the
+     * item being imported. If false, the record will be skipped in an existing record is found.
+     *
+     * Important: If $canCheckForDuplicates is set to false, the value of this property will become irrelevant,
+     * because the import won't search for duplicate records.
+     *
+     * Default: false
+     *
+     * @var bool
+     */
+    protected $canUpdateDuplicates;
+
+    /**
+     * If true, when an existing record is being updated, any missing or empty fields in the imported item will be
+     * set to null in the existing record. If false, the missing or empty fields in the imported item will not
+     * affect the existing values in the duplicate record.
+     *
+     * Default: true
+     *
+     * @var bool
+     */
+    protected $canSaveEmptyFields;
+
+    /**
      * EntityContext constructor.
      *
      * @param string $name
@@ -56,10 +90,13 @@ class EntityContext
      */
     public function __construct($name, array $fields = [], array $associations = [], array $indexFields = [])
     {
-        $this->name         = $name;
-        $this->fields       = $fields;
-        $this->associations = $associations;
-        $this->indexFields  = $indexFields;
+        $this->name                 = $name;
+        $this->fields               = $fields;
+        $this->associations         = $associations;
+        $this->indexFields          = $indexFields;
+        $this->checkForDuplicates   = true;
+        $this->canUpdateDuplicates  = false;
+        $this->canSaveEmptyFields   = true;
     }
 
     /**
@@ -135,18 +172,6 @@ class EntityContext
     }
 
     /**
-     * @param $field
-     *
-     * @return $this
-     */
-    public function addIndexField($field)
-    {
-        $this->indexFields[] = $field;
-
-        return $this;
-    }
-
-    /**
      * Maps the values from the item to the index fields defined in the entity context.
      *
      * @param array $item
@@ -179,9 +204,75 @@ class EntityContext
      *
      * @return $this
      */
-    public function setIndexFields($indexFields)
+    public function setIndexFields(array $indexFields)
     {
         $this->indexFields = $indexFields;
+
+        return $this;
+    }
+
+    /**
+     * @param $field
+     *
+     * @return $this
+     */
+    public function addIndexField($field)
+    {
+        $this->indexFields[] = $field;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function canCheckForDuplicates() {
+       return $this->checkForDuplicates;
+    }
+
+    /**
+     * @param bool $check
+     *
+     * @return $this
+     */
+    public function setCheckForDuplicates($check) {
+        $this->checkForDuplicates = $check;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function canUpdateDuplicates() {
+        return $this->canUpdateDuplicates;
+    }
+
+    /**
+     * @param $canUpdate
+     *
+     * @return $this
+     */
+    public function setUpdateDuplicates($canUpdate) {
+        $this->canUpdateDuplicates = $canUpdate;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function canSaveEmptyFields() {
+        return $this->canSaveEmptyFields;
+    }
+
+    /**
+     * @param $canSave
+     *
+     * @return $this
+     */
+    public function setSaveEmptyFields($canSave) {
+        $this->canSaveEmptyFields = $canSave;
 
         return $this;
     }
@@ -194,7 +285,6 @@ class EntityContext
     public function createObjectAsArray()
     {
         $object = [];
-
         foreach ($this->fields as $field) {
             $object[$field] = null;
         }
