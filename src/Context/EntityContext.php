@@ -140,6 +140,17 @@ class EntityContext
     }
 
     /**
+     * @param $name
+     *
+     * @return $this
+     */
+    public function addField($name) {
+        $this->fields[] = $name;
+
+        return $this;
+    }
+
+    /**
      * @return array
      */
     public function getAssociations()
