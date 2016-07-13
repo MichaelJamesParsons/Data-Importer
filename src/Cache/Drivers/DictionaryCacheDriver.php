@@ -29,7 +29,7 @@ class DictionaryCacheDriver extends AbstractCacheDriver
             $this->cache[$name] = [];
         }
 
-        $this->cache[$this->hashKey($key)] = $value;
+        $this->cache[$name][$key] = $value;
     }
 
     /**
@@ -45,7 +45,7 @@ class DictionaryCacheDriver extends AbstractCacheDriver
      */
     public function remove($name, $key)
     {
-        unset($this->cache[$name][$this->hashKey($key)]);
+        unset($this->cache[$name][$key]);
     }
 
     /**
@@ -53,6 +53,6 @@ class DictionaryCacheDriver extends AbstractCacheDriver
      */
     public function find($name, $key)
     {
-        return $this->cache[$name][$this->hashKey($key)];
+        return $this->cache[$name][$key];
     }
 }
