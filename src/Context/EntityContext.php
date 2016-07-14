@@ -10,8 +10,8 @@ class EntityContext
     /**
      * The name of the object.
      *
-     * ORM oriented database contexts should provide the fully qualified namespace of the entity they intend to import.
-     * Contexts that directly interact with the database without an ORM should set this value to the name of the table.
+     * ORM oriented database writers should provide the fully qualified namespace of the entity they intend to import.
+     * Non-ORM contexts that directly interact with the database should set this value to the name of the table.
      *
      * @var  string
      */

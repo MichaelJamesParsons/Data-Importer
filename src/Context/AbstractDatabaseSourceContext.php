@@ -30,6 +30,8 @@ abstract class AbstractDatabaseSourceContext extends AbstractSourceWriterContext
 
         return $context;
     }
+    
+    
 
     /**
      * @inheritdoc

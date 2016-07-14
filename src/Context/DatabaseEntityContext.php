@@ -16,16 +16,6 @@ class DatabaseEntityContext extends EntityContext
     protected $primaryKey;
 
     /**
-     * Determines if the primary key should be included in the import when it is executed.
-     *
-     * This value should always be set to true when a table contains composite keys that are not incremental.
-     *
-     * @todo - Consider removing now that only incremental keys are stored in $primaryKey.
-     * @var  bool
-     */
-    protected $importablePrimaryKey;
-
-    /**
      * DatabaseEntityContext constructor.
      *
      * @param string $name
@@ -43,27 +33,6 @@ class DatabaseEntityContext extends EntityContext
     ) {
         parent::__construct($name, $fields, $associations, $indexFields);
         $this->primaryKey           = $incrementalPrimaryKey;
-        $this->importablePrimaryKey = false;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function isImportablePrimaryKey()
-    {
-        return $this->importablePrimaryKey;
-    }
-
-    /**
-     * @param boolean $importablePrimaryKey
-     *
-     * @return $this
-     */
-    public function setImportablePrimaryKey($importablePrimaryKey)
-    {
-        $this->importablePrimaryKey = $importablePrimaryKey;
-
-        return $this;
     }
 
     /**

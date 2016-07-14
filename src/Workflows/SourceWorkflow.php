@@ -2,7 +2,7 @@
 namespace michaeljamesparsons\DataImporter\Workflows;
 
 use michaeljamesparsons\DataImporter\Readers\AbstractReader;
-use michaeljamesparsons\DataImporter\Writers\AbstractSourceWriter;
+use michaeljamesparsons\DataImporter\Writers\AbstractEntityWriter;
 
 /**
  * Class SourceWorkflow
@@ -23,7 +23,7 @@ class SourceWorkflow extends DefaultWorkflow
         return $this;
     }
 
-    protected function processReaders(AbstractSourceWriter $writer)
+    protected function processReaders(AbstractEntityWriter $writer)
     {
         /** @var AbstractReader $reader */
         foreach ($this->readers as $entity => $reader) {
@@ -36,7 +36,7 @@ class SourceWorkflow extends DefaultWorkflow
     /**
      * @inheritdoc
      */
-    protected function processItem(AbstractReader $reader, AbstractSourceWriter $writer, array $item, $entity)
+    protected function processItem(AbstractReader $reader, AbstractEntityWriter $writer, array $item, $entity)
     {
         try {
             if (!$reader->filter($item)) {
