@@ -4,6 +4,7 @@ namespace michaeljamesparsons\DataImporter\Writers;
 use michaeljamesparsons\DataImporter\Cache\AbstractCacheDriver;
 use michaeljamesparsons\DataImporter\Context\AbstractDatabaseSourceContext;
 use michaeljamesparsons\DataImporter\Context\DatabaseEntityContext;
+use michaeljamesparsons\DataImporter\Context\EntityContext;
 
 /**
  * Class DatabaseWriter
@@ -83,6 +84,7 @@ class DatabaseWriter extends AbstractDatabaseWriter
         $this->context->persist($context, $record);
         $this->cache->add($context->getName(), $record[$context->getPrimaryKey()], null);
     }
+    
 
     protected function flush() {
         $savedEntities = $this->context->flush();
@@ -92,5 +94,48 @@ class DatabaseWriter extends AbstractDatabaseWriter
                 $this->cache->update($name, $old, $new);
             }
         }
+    }
+
+    /**
+     * @param boolean $truncate
+     */
+    public function setTruncate($truncate)
+    {
+        // TODO: Implement setTruncate() method.
+    }
+
+    /**
+     * @param EntityContext $context
+     * @param array         $item
+     *
+     * @return array
+     */
+    protected function findInDatabase(EntityContext $context, array $item)
+    {
+        // TODO: Implement findInDatabase() method.
+    }
+
+    /**
+     * Turn on database query logging.
+     */
+    protected function enableDatabaseLogging()
+    {
+        // TODO: Implement enableDatabaseLogging() method.
+    }
+
+    /**
+     * Turn off database query logging.
+     */
+    protected function disableDatabaseLogging()
+    {
+        // TODO: Implement disableDatabaseLogging() method.
+    }
+
+    /**
+     * Truncate the table associated with the records being imported.
+     */
+    protected function truncateTable()
+    {
+        // TODO: Implement truncateTable() method.
     }
 }

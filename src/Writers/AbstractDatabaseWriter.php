@@ -2,14 +2,13 @@
 namespace michaeljamesparsons\DataImporter\Writers;
 
 use michaeljamesparsons\DataImporter\Cache\AbstractCacheDriver;
-use michaeljamesparsons\DataImporter\Context\AbstractDatabaseSourceContext;
 use michaeljamesparsons\DataImporter\Context\DatabaseEntityContext;
 
 /**
  * Class AbstractDatabaseWriter
  * @package michaeljamesparsons\DataImporter\Writers
  */
-abstract class AbstractDatabaseWriter extends AbstractSourceWriter
+abstract class AbstractDatabaseWriter extends AbstractEntityWriter
 {
     /**
      * The number of items imported.
@@ -30,25 +29,16 @@ abstract class AbstractDatabaseWriter extends AbstractSourceWriter
      *
      * @var  bool
      */
-    protected $truncate;
+    protected $canTruncate;
 
     /**
      * AbstractDatabaseWriter constructor.
      *
-     * @param AbstractDatabaseSourceContext $context
-     * @param int                           $bundleSize
-     * @param AbstractCacheDriver           $cache
+     * @param int                 $bundleSize
+     * @param AbstractCacheDriver $cache
      */
-    public function __construct(
-        AbstractDatabaseSourceContext $context,
-        $bundleSize = 300,
-        AbstractCacheDriver $cache = null
-    ) {
-        parent::__construct($context, $cache);
-
-        //This is here for IDE code completion purposes.
-        /** @var AbstractDatabaseSourceContext context */
-        $this->context    = $context;
+    public function __construct($bundleSize = 300, AbstractCacheDriver $cache = null) {
+        parent::__construct($cache);
         $this->bundleSize = $bundleSize;
         $this->count      = 0;
     }
@@ -56,17 +46,15 @@ abstract class AbstractDatabaseWriter extends AbstractSourceWriter
     /**
      * @return boolean
      */
-    public function truncate()
-    {
-        return $this->truncate;
+    public function canTruncate() {
+        return $this->canTruncate;
     }
 
     /**
      * @param boolean $truncate
      */
-    public function setTruncate($truncate)
-    {
-        $this->truncate = $truncate;
+    public function setCanTruncate($truncate) {
+        $this->canTruncate = $truncate;
     }
 
     /**
@@ -74,8 +62,8 @@ abstract class AbstractDatabaseWriter extends AbstractSourceWriter
      */
     public function before()
     {
-        if ($this->truncate) {
-            $this->context->truncateTable();
+        if ($this->canTruncate) {
+            $this->truncateTable();
         }
     }
 
@@ -84,7 +72,24 @@ abstract class AbstractDatabaseWriter extends AbstractSourceWriter
      */
     public function after()
     {
-        $this->context->flush();
+        $this->flush();
+    }
+
+    public function addEntity(DatabaseEntityContext $context)
+    {
+        return parent::addEntity($context);
+    }
+
+    public function setEntities($entities)
+    {
+        /** @var DatabaseEntityContext $entity */
+        foreach($entities as $entity) {
+            if(!($entity instanceof DatabaseEntityContext)) {
+                throw new \Exception("Entity context must be of type DatabaseEntityContext.");
+            }
+        }
+
+        parent::setEntities($entities);
     }
 
     /**
@@ -102,10 +107,7 @@ abstract class AbstractDatabaseWriter extends AbstractSourceWriter
             /**
              * Check if the record has already been imported by its primary key.
              */
-            $entity = $this->cache->find(
-                $context->getName(),
-                $item[$context->getPrimaryKey()]
-            );
+            $entity = $this->cache->find($context->getName(), $item[$context->getPrimaryKey()]);
 
             /**
              * The record is not in the cache. Check if a duplicate exists in the database.
@@ -113,7 +115,7 @@ abstract class AbstractDatabaseWriter extends AbstractSourceWriter
              * If the index fields are empty, or a duplicate record does not already exist, a new entity will be returned.
              */
             if (empty($entity)) {
-                $entity = $this->context->findOrCreateIfNotExists($context, $item);
+                $entity = $this->findInDatabase($context, $item);
 
                 if(!empty($entity)) {
                     $this->cache->add(
@@ -135,4 +137,44 @@ abstract class AbstractDatabaseWriter extends AbstractSourceWriter
 
         return $entity;
     }
+
+    /**
+     * @param DatabaseEntityContext $context
+     * @param array         $item
+     *
+     * @return array
+     */
+    protected abstract function findInDatabase(DatabaseEntityContext $context, array $item);
+
+    /**
+     * Turn on database query logging.
+     */
+    protected abstract function enableDatabaseLogging();
+
+    /**
+     * Turn off database query logging.
+     */
+    protected abstract function disableDatabaseLogging();
+
+    /**
+     * Truncate the table associated with the records being imported.
+     *
+     * @todo Move logic to Database entity context.
+     */
+    protected abstract function truncateTable();
+
+    /**
+     * Add parsed item to the bundle to be saved.
+     *
+     * @param DatabaseEntityContext $context
+     * @param array         $record - The record or entity to be persisted.
+     *
+     * @return
+     */
+    protected abstract function persist(DatabaseEntityContext $context, array $record);
+
+    /**
+     * Save a bundle of records.
+     */
+    protected abstract function flush();
 }
