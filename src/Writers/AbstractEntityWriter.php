@@ -10,7 +10,7 @@ use michaeljamesparsons\DataImporter\Context\EntityContext;
  * Class AbstractEntityWriter
  * @package michaeljamesparsons\DataImporter\Writers
  */
-abstract class AbstractEntityWriter extends AbstractWriter implements SourceWriterInterface
+abstract class AbstractEntityWriter extends AbstractWriter implements RelationalWriterInterface
 {
     /**
      * A list of EntityContext objects.

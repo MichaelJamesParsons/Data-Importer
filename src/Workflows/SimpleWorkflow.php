@@ -8,10 +8,10 @@ use michaeljamesparsons\DataImporter\Writers\AbstractWriter;
 
 
 /**
- * Class DefaultWorkflow
+ * Class SimpleWorkflow
  * @package sa\import
  */
-class DefaultWorkflow extends AbstractWorkflow
+class SimpleWorkflow extends AbstractWorkflow
 {
     /**
      * @return Report

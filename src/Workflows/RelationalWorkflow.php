@@ -5,10 +5,10 @@ use michaeljamesparsons\DataImporter\Readers\AbstractReader;
 use michaeljamesparsons\DataImporter\Writers\AbstractEntityWriter;
 
 /**
- * Class SourceWorkflow
+ * Class RelationalWorkflow
  * @package michaeljamesparsons\DataImporter\Workflows
  */
-class SourceWorkflow extends DefaultWorkflow
+class RelationalWorkflow extends SimpleWorkflow
 {
     /**
      * @param AbstractReader $reader
