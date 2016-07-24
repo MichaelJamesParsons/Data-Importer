@@ -2,7 +2,7 @@
 namespace michaeljamesparsons\DataImporter\Workflows;
 
 use michaeljamesparsons\DataImporter\Readers\AbstractReader;
-use michaeljamesparsons\DataImporter\Writers\AbstractEntityWriter;
+use michaeljamesparsons\DataImporter\Writers\AbstractRelationalWriter;
 
 /**
  * Class RelationalWorkflow
@@ -23,7 +23,7 @@ class RelationalWorkflow extends SimpleWorkflow
         return $this;
     }
 
-    protected function processReaders(AbstractEntityWriter $writer)
+    protected function processReaders(AbstractRelationalWriter $writer)
     {
         /** @var AbstractReader $reader */
         foreach ($this->readers as $entity => $reader) {
@@ -36,7 +36,7 @@ class RelationalWorkflow extends SimpleWorkflow
     /**
      * @inheritdoc
      */
-    protected function processItem(AbstractReader $reader, AbstractEntityWriter $writer, array $item, $entity)
+    protected function processItem(AbstractReader $reader, AbstractRelationalWriter $writer, array $item, $entity)
     {
         try {
             if (!$reader->filter($item)) {

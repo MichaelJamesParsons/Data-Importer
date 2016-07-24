@@ -7,10 +7,10 @@ use michaeljamesparsons\DataImporter\Cache\Drivers\DictionaryCacheDriver;
 use michaeljamesparsons\DataImporter\Context\EntityContext;
 
 /**
- * Class AbstractEntityWriter
+ * Class AbstractRelationalWriter
  * @package michaeljamesparsons\DataImporter\Writers
  */
-abstract class AbstractEntityWriter extends AbstractWriter implements RelationalWriterInterface
+abstract class AbstractRelationalWriter extends AbstractWriter implements RelationalWriterInterface
 {
     /**
      * A list of EntityContext objects.

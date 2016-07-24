@@ -8,7 +8,7 @@ use michaeljamesparsons\DataImporter\Context\DatabaseEntityContext;
  * Class AbstractDatabaseWriter
  * @package michaeljamesparsons\DataImporter\Writers
  */
-abstract class AbstractDatabaseWriter extends AbstractEntityWriter
+abstract class AbstractDatabaseWriter extends AbstractRelationalWriter
 {
     /**
      * The number of items imported.
