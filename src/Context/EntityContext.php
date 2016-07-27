@@ -81,6 +81,14 @@ class EntityContext
     protected $canSaveEmptyFields;
 
     /**
+     * If true, the old and new primary key of each of this entity's records will be stored in a cache, which other
+     * entities may reference to connect relationships between each other.
+     *
+     * @var boolean
+     */
+    protected $canCache;
+
+    /**
      * EntityContext constructor.
      *
      * @param string $name
@@ -284,6 +292,26 @@ class EntityContext
      */
     public function setSaveEmptyFields($canSave) {
         $this->canSaveEmptyFields = $canSave;
+
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function canCache()
+    {
+        return $this->canCache;
+    }
+
+    /**
+     * @param boolean $canCache
+     *
+     * @return $this
+     */
+    public function setCanCache($canCache)
+    {
+        $this->canCache = $canCache;
 
         return $this;
     }
