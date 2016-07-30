@@ -20,6 +20,12 @@ class SqlDatabaseWriter extends AbstractDatabaseWriter
     /** @var  array */
     protected $updateQueries;
 
+    /**
+     * SqlDatabaseWriter constructor.
+     *
+     * @param PDO                 $pdo
+     * @param AbstractCacheDriver $cache
+     */
     public function __construct(\PDO $pdo, AbstractCacheDriver $cache)
     {
         parent::__construct($cache);
@@ -29,6 +35,8 @@ class SqlDatabaseWriter extends AbstractDatabaseWriter
     {
         /** @var DatabaseEntityContext $context */
         $context = $this->getEntityContext($entity);
+
+        /** @var RelationalItem $record */
         $record = $this->findOrCreateIfNotExists($context, $item);
         $this->persist($context, $record);
 
@@ -55,8 +63,8 @@ class SqlDatabaseWriter extends AbstractDatabaseWriter
         $this->pdo->commit();
     }
 
-    protected function persist(DatabaseEntityContext $context, array $record) {
-        if(!empty($record[$context->getPrimaryKey()]) && !empty($this->findInDatabase($context, $record))) {
+    protected function persist(DatabaseEntityContext $context, RelationalItem $record) {
+        if(!empty($record->getImportedId())) {
             if($context->canUpdateDuplicates()) {
                 $this->queueForUpdate($context, $record);
             }
@@ -65,13 +73,11 @@ class SqlDatabaseWriter extends AbstractDatabaseWriter
         }
     }
 
-    protected function queueForUpdate(DatabaseEntityContext $context, array $item) {
-        if($context->canUpdateDuplicates()) {
-            $this->updateQueries[$context->getName()][$item[$context->getPrimaryKey()]] = $this->buildUpdateQuery(
-                $context,
-                $item
-            );
-        }
+    protected function queueForUpdate(DatabaseEntityContext $context, RelationalItem $item) {
+        $this->updateQueries[$context->getName()][$item[$context->getPrimaryKey()]] = $this->buildUpdateQuery(
+            $context,
+            $item->getValues()
+        );
     }
 
     protected function buildUpdateQuery(DatabaseEntityContext $context, array $item) {
@@ -89,8 +95,8 @@ class SqlDatabaseWriter extends AbstractDatabaseWriter
         ));
     }
 
-    protected function queueForInsert(DatabaseEntityContext $context, array $item) {
-        $fields = $this->getQueryFields($context, $item);
+    protected function queueForInsert(DatabaseEntityContext $context, RelationalItem $item) {
+        $fields = $this->getQueryFields($context, $item->getValues());
         $values = [];
         foreach($context->getFields() as $column => $value) {
             $values[] = '?';

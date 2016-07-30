@@ -98,7 +98,7 @@ abstract class AbstractDatabaseWriter extends AbstractRelationalWriter
      * @param DatabaseEntityContext $context
      * @param array                 $item
      *
-     * @return array
+     * @return RelationalItem
      */
     protected function findOrCreateIfNotExists(DatabaseEntityContext $context, array $item)
     {
@@ -135,7 +135,7 @@ abstract class AbstractDatabaseWriter extends AbstractRelationalWriter
             $entity = $context->createObjectAsArray();
         }
 
-        return $entity;
+        return new RelationalItem($item[$context->getPrimaryKey()], $item, $entity[$context->getPrimaryKey()]);
     }
 
     /**
@@ -167,11 +167,11 @@ abstract class AbstractDatabaseWriter extends AbstractRelationalWriter
      * Add parsed item to the bundle to be saved.
      *
      * @param DatabaseEntityContext $context
-     * @param array         $record - The record or entity to be persisted.
+     * @param RelationalItem        $record - The item to be persisted.
      *
      * @return
      */
-    protected abstract function persist(DatabaseEntityContext $context, array $record);
+    protected abstract function persist(DatabaseEntityContext $context, RelationalItem $record);
 
     /**
      * Save a bundle of records.
