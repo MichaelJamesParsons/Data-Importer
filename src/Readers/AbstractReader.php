@@ -1,6 +1,7 @@
 <?php
 namespace michaeljamesparsons\DataImporter\Readers;
 
+use michaeljamesparsons\DataImporter\Adapter\AbstractAdapter;
 use michaeljamesparsons\DataImporter\Converters\ConverterInterface;
 use michaeljamesparsons\DataImporter\Filters\FilterInterface;
 
@@ -15,6 +16,9 @@ abstract class AbstractReader implements \Iterator
 
     /** @var  array */
     protected $converters;
+
+    /** @var  AbstractAdapter */
+    protected $adapter;
 
     public function __construct()
     {
@@ -80,5 +84,17 @@ abstract class AbstractReader implements \Iterator
         }
 
         return $item;
+    }
+
+    /**
+     * @param AbstractAdapter $adapter
+     *
+     * @return $this
+     */
+    public function setAdapter($adapter)
+    {
+        $this->adapter = $adapter;
+
+        return $this;
     }
 }

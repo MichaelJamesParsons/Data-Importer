@@ -25,11 +25,11 @@ class EntityContext
     protected $fields;
 
     /**
-     * A list of Association object which define the entity's foreign key relationships.
+     * A list of AbstractAssociation objects which define the entity's foreign key relationships.
      *
      * These relationships must be defined in order to import relationships between multiple entities.
      *
-     * @var  Association[]
+     * @var  AbstractAssociation[]
      */
     protected $associations;
 
@@ -179,11 +179,11 @@ class EntityContext
     }
 
     /**
-     * @param Association $association
+     * @param AbstractAssociation $association
      *
      * @return $this
      */
-    public function addAssociation(Association $association)
+    public function addAssociation(AbstractAssociation $association)
     {
         $this->associations[] = $association;
 

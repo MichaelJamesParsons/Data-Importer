@@ -36,9 +36,11 @@ abstract class AbstractRelationalWriter extends AbstractWriter implements Relati
         $this->entities = [];
 
         /**
-         * Caching is disabled by default to optimize the speed and memory usage of this writer. It should
+         * Caching is disabled by default to optimize the memory usage of this writer. It should
          * be enabled when a writer requires the storage of key mappings of objection relationships, or information
          * that must persist across multiple readers.
+         *
+         * @todo - enable by default
          */
         $this->cacheEnabled = false;
     }

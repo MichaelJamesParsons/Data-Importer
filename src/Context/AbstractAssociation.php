@@ -2,10 +2,10 @@
 namespace michaeljamesparsons\DataImporter\Context;
 
 /**
- * Class Association
+ * Class AbstractAssociation
  * @package michaeljamesparsons\DataImporter\Context
  */
-class Association
+abstract class AbstractAssociation
 {
     const TYPE_ONE_TO_ONE = 1;
     const TYPE_ONE_TO_MANY = 2;
@@ -22,7 +22,7 @@ class Association
     protected $type;
 
     /**
-     * Association constructor.
+     * AbstractAssociation constructor.
      *
      * @param      $sourceProperty
      * @param      $targetObject

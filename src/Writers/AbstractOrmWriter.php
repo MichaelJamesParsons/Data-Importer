@@ -1,7 +1,7 @@
 <?php
 namespace michaeljamesparsons\DataImporter\Writers;
 
-use michaeljamesparsons\DataImporter\Context\Association;
+use michaeljamesparsons\DataImporter\Context\AbstractAssociation;
 use michaeljamesparsons\DataImporter\Context\DatabaseEntityContext;
 
 /**
@@ -28,11 +28,11 @@ abstract class AbstractOrmWriter extends AbstractDatabaseWriter
                 continue;
             }
 
-            /** @var Association $association */
+            /** @var AbstractAssociation $association */
             foreach ($context->getAssociations() as $association) {
                 if ($association->getSourceProperty() == $property) {
                     if (in_array($association->getType(),
-                        [Association::TYPE_ONE_TO_MANY, Association::TYPE_MANY_TO_MANY])) {
+                        [AbstractAssociation::TYPE_ONE_TO_MANY, AbstractAssociation::TYPE_MANY_TO_MANY])) {
                         $method = sprintf('add%s', ucwords($property));
                     } else {
                         $method = sprintf('set%s', ucwords($property));
