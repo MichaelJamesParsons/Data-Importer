@@ -16,6 +16,8 @@ abstract class AbstractSqlDriver
         $this->indexes = [];
     }
 
+    public function buildInsertQuery($table, $fields, $table) {}
+    public function buildUpdateQuery($table, $fields, $table) {}
     public abstract function findTable($tableName);
     public abstract function disableIndexes($keys);
 
