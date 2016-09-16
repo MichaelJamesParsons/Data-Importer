@@ -2,6 +2,7 @@
 namespace michaeljamesparsons\DataImporter\Writers;
 
 use Exception;
+use michaeljamesparsons\DataImporter\Adapter\RelationalEntity;
 use michaeljamesparsons\DataImporter\Cache\AbstractCacheDriver;
 use michaeljamesparsons\DataImporter\Cache\Drivers\DictionaryCacheDriver;
 use michaeljamesparsons\DataImporter\Context\EntityContext;
@@ -10,7 +11,7 @@ use michaeljamesparsons\DataImporter\Context\EntityContext;
  * Class AbstractRelationalWriter
  * @package michaeljamesparsons\DataImporter\Writers
  */
-abstract class AbstractRelationalWriter extends AbstractWriter implements RelationalWriterInterface
+abstract class AbstractRelationalWriter extends AbstractWriter
 {
     /**
      * A list of EntityContext objects.
@@ -100,7 +101,12 @@ abstract class AbstractRelationalWriter extends AbstractWriter implements Relati
         return $this->cacheEnabled;
     }
 
-    public function write(array $item, $entity)
+    /**
+     * @param RelationalEntity $item
+     * @override
+     */
+    public function write(RelationalEntity $item)
     {
+        parent::write($item);
     }
 }

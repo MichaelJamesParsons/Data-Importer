@@ -1,7 +1,7 @@
 <?php
 namespace michaeljamesparsons\DataImporter\Readers;
 
-use michaeljamesparsons\DataImporter\Adapter\AbstractAdapter;
+use michaeljamesparsons\DataImporter\Adapter\GenericEntity;
 use michaeljamesparsons\DataImporter\Converters\ConverterInterface;
 use michaeljamesparsons\DataImporter\Filters\FilterInterface;
 
@@ -17,13 +17,14 @@ abstract class AbstractReader implements \Iterator
     /** @var  array */
     protected $converters;
 
-    /** @var  AbstractAdapter */
+    /** @var  GenericEntity */
     protected $adapter;
 
-    public function __construct()
+    public function __construct(GenericEntity $a)
     {
         $this->filters    = [];
         $this->converters = [];
+
     }
 
     /**
@@ -87,7 +88,7 @@ abstract class AbstractReader implements \Iterator
     }
 
     /**
-     * @param AbstractAdapter $adapter
+     * @param GenericEntity $adapter
      *
      * @return $this
      */

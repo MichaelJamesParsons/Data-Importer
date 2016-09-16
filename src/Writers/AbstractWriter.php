@@ -1,6 +1,8 @@
 <?php
 namespace michaeljamesparsons\DataImporter\Writers;
 
+use michaeljamesparsons\DataImporter\Adapter\GenericEntity;
+
 /**
  * Class AbstractWriter
  * @package michaeljamesparsons\DataImporter\Writers
@@ -10,10 +12,13 @@ abstract class AbstractWriter
     /**
      * Import a single item.
      *
-     * @param array $item - The item to import.
+     * @param GenericEntity $item - The item to import.
+     *
+     * @throws \Exception
      */
-    public function write(array $item)
+    public function write(GenericEntity $item)
     {
+        throw new \Exception("Writer not implemented.");
     }
 
     /**
